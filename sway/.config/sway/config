@@ -1,0 +1,310 @@
+### Variables
+# Mod4 is Logo key.
+set $mod Mod4
+set $alt Mod1
+set $left h
+set $down j
+set $up k
+set $right l
+set $term alacritty
+set $scripts $HOME/bin
+set $browser firefox
+set $file_manager nautilus
+
+## Command Variables
+set $shutdown sudo shutdown -h now
+set $reboot sudo reboot
+set $netrefresh  sudo systemctl restart NetworkManager
+set $hibernate sudo systemctl suspend
+set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
+set $menu wofi --show drun
+# Screenshot of selection to stdout, saving to a file and into clipboard
+set $screenshot grim -g "$(slurp)" - | tee /tmp/"$(date +%Y%m%d_%H%M%S)".png | wl-copy
+
+### Startup
+# exec $scripts/gnome-keyring.sh
+exec $scripts/track_prev_focus
+
+### Output and Input configuration
+# include $HOME/.config/sway/config.d/$(hostname).conf
+
+### Idle configuration
+exec swayidle -w \
+         timeout 600 'swaylock -f -c 000000' \
+         timeout 700 'swaymsg "output * dpms off"' \
+              resume 'swaymsg "output * dpms on"' \
+         before-sleep 'swaylock -f -c 000000'
+
+# This will lock your screen after 600 seconds of inactivity, then turn off
+# your displays after another 100 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+
+
+### Input configuration
+
+# Inputs are per host based, see at the end of the line.
+# include $HOME/.config/sway/config.d/$(hostname).conf
+
+### Key bindings
+
+## Basics:
+
+    # Start a terminal
+    bindsym $mod+Return exec $term
+    bindsym $mod+Shift+Return exec x-terminal-emulator
+
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+
+    # Start your launcher
+    bindsym $mod+d exec $menu
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+
+    # Exit sway (logs you out of your Wayland session)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+#
+# Added functionality:
+#
+# Toggle Redshift
+bindsym $mod+Home exec pkill -USR1 redshift
+
+# Screenshot selection
+bindsym --release Shift+Print exec $screenshot
+bindsym $mod+Shift+p exec paste
+
+
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+
+    # Move focus to previous window
+    bindsym $mod++g focus next
+    bindsym $mod+Shift+g focus prev
+
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+
+# Advanced Movement
+    bindsym $mod+Tab workspace back_and_forth
+    # To be implemented, search windows with super tab
+    bindsym $alt+Tab [con_mark="_prev"] focus
+
+#Moving between workspaces
+    bindsym $mod+period workspace next_on_output
+    bindsym $mod+comma workspace prev_on_output
+
+#Moving window throught workspaces
+    bindsym $mod+Control+$alt+h move container to workspace prev_on_output, workspace prev_on_output
+    bindsym $mod+Control+$alt+l move container to workspace next_on_output, workspace next_on_output
+
+#Opens next free workspace
+    bindsym $mod+o exec $scripts/sway_empty_workspace.py open
+    bindsym $mod+Shift+o exec $scripts/sway_empty_workspace.py move
+
+#
+# Workspaces:
+#
+    # Switch to workspace
+    bindsym $mod+1 workspace 1
+    bindsym $mod+2 workspace 2
+    bindsym $mod+3 workspace 3
+    bindsym $mod+4 workspace 4
+    bindsym $mod+5 workspace 5
+    bindsym $mod+6 workspace 6
+    bindsym $mod+7 workspace 7
+    bindsym $mod+8 workspace 8
+    bindsym $mod+9 workspace 9
+    bindsym $mod+0 workspace 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace 1
+    bindsym $mod+Shift+2 move container to workspace 2
+    bindsym $mod+Shift+3 move container to workspace 3
+    bindsym $mod+Shift+4 move container to workspace 4
+    bindsym $mod+Shift+5 move container to workspace 5
+    bindsym $mod+Shift+6 move container to workspace 6
+    bindsym $mod+Shift+7 move container to workspace 7
+    bindsym $mod+Shift+8 move container to workspace 8
+    bindsym $mod+Shift+9 move container to workspace 9
+    bindsym $mod+Shift+0 move container to workspace 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    bindsym $mod+t split toggle
+
+    # Switch the current container between different layout styles
+    bindsym $mod+e layout stacking
+    bindsym $mod+w layout default 
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+    bindsym $mod+Shift+a focus child
+
+    # Gaps
+    # only outer gaps when 1 window present
+    # inside gaps
+    # inner+outer = edge gap
+    smart_gaps inverse_outer                            
+    gaps inner 8                                        
+    gaps outer 2                                        
+    bindsym $mod+m gaps inner current plus 3
+    bindsym $mod+Shift+m gaps inner current minus 3
+
+#
+# Theme stuff
+#
+
+
+
+#
+# Scratchpad:
+#
+    # Initialise windows stored in scratchpad
+    exec  $term --class dropdown -e bash -c tmux -s new dropdown
+    exec  $term --class nnn -e nnn
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # Hides any scratchpad marked with last, or shows the last one marked
+    bindsym $mod+n [con_mark="last"] scratchpad show
+    bindsym $mod+Shift+n [app_id="^nnn$"] scratchpad show, [app_id="^nnn$"] move position center, mark last
+    bindsym $mod+u [app_id="^dropdown$"] scratchpad show, [app_id="^dropdown$"] move position center, mark last
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus mark scratch, move scratchpad
+    # Show window marked with previous mark
+    bindsym $mod+minus [con_mark="^scratch$"] scratchpad show
+
+    # scratchpad web apps
+    # for window
+#
+# Modes
+#
+
+# resize containers 
+bindsym $mod+r mode "resize"
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $right resize grow width 20px
+    bindsym $left resize shrink width 20px
+    bindsym $down resize grow height 20px
+    bindsym $up resize shrink height 20px
+
+    # With shift for fine grained
+    bindsym Shift+$right resize grow width 10px
+    bindsym Shift+$left resize shrink width 10px
+    bindsym Shift+$down resize grow height 10px
+    bindsym Shift+$up resize shrink height 10px
+
+    # Change layout mode
+    bindsym e layout toggle split, mode "default"
+    bindsym s layout stacking, mode "default"
+    bindsym t layout tabbed, mode "default"
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Launch mode
+bindsym $mod+i mode "launch"
+mode "launch" {
+        bindsym h [window_role="^wa_app_ha$"] scratchpad show, [window_role="^wa_app_ha$"] move position center, mode "default", mark last
+        bindsym w [window_role="^wa_app_wekan$"] scratchpad show, [window_role="^wa_app_wekan$"] move position center, mode "default", mark last
+        bindsym l [window_role="^wa_app_hei$"] scratchpad show, [window_role="^wa_app_hei$"] move position center, mode "default", mark last
+        bindsym b exec $browser, mode "default"
+        bindsym f exec $file_manager, mode "default"
+        bindsym m exec spotify, mode "default"
+        bindsym t exec telegram-desktop, mode "default"
+        bindsym c exec $browser --app="https://web.whatsapp.com/", mode "default"
+        bindsym u exec --no-startup-id $term --class=dropdown
+        bindsym Escape mode "default"
+}
+
+
+### Layouts stuff
+#
+# Global Properties
+# titlebar_border_thickness 1
+for_window [title=".*"] border pixel 5
+show_marks yes
+bindsym $mod+Shift+y border toggle
+bindsym $mod+y title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
+
+# Assign Window to Workspace
+assign [class="^TelegramDesktop"] 10
+assign [class="^discord$"] 10
+assign [class="^Spotify$"] 10
+
+# Layout
+for_window [app_id="^Alacritty$"] opacity set 0.85
+for_window [con_mark="test"] floating enable, resize set 900 500
+for_window [class="^(Bitwarden)$"] floating enable, resize set 925 600
+for_window [instance="^web.whatsapp.com$"] floating enable, resize set 1200 800
+for_window [app_id="^(pavucontrol|gnome-power-.*)"] floating enable, resize set 925 600
+
+# scrachpads
+for_window [app_id="^(dropdown|nnn)$"] floating enable, resize set 925 600, move scratchpad, border pixel 5
+
+
+### Status Bar:
+#
+exec_always $HOME/.config/waybar/waybar.sh
+
+
+### Function Buttons
+#
+#bindsym $mod+F1
+bindsym $mod+F2 reload
+#bindsym $mod+F3
+#bindsym $mod+F4
+#bindsym $mod+F5	
+#bindsym $mod+F6		
+bindsym $mod+F7 exec wdisplays
+#bindsym $mod+F8
+#bindsym $mod+F9		
+#bindsym $mod+F10	
+#bindsym $mod+F11	
+#bindsym $mod+F12	
+
+### Include another config file named hostname.conf
+include $HOME/.config/sway/config.d/$(hostname).conf

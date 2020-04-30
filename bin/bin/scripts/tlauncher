@@ -1,0 +1,15 @@
+#!/bin/bash
+
+choices="All\nDropdown\nnnn"
+
+chosen=$(printf "$choices" | dmenu -i)
+echo $chosen
+
+case "$chosen" in
+	All ) $MYTERM -T dropdown -e "bash -c tmux -s new dropdown" && $MYTERM -T nnn -e nnn ;;
+	Dropdown) $MYTERM -T dropdown -e "bash -c tmux -s new dropdown" ;;
+	nnn) $MYTERM -T nnn -e nnn ;;
+esac
+
+echo $chosen
+

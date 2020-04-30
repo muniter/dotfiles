@@ -1,0 +1,20 @@
+#!/bin/sh
+
+choices="Laptop\nDuplicate\nUSB-C Only\nRight\nLeft\nManual selection"
+
+chosen=$(echo "$choices" | dmenu -i)
+echo $chosen
+
+case "$chosen" in
+	Laptop) xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output DP-1 --off --output DP-2 --off ;;
+	Duplicate) xrandr --output HDMI-2 --off --output HDMI-1 --auto --pos 0x0 --rotate normal --output DP-1 --auto --pos 0x0 --rotate normal --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-2 --off ;;
+	"USB-C Only") xrandr --output HDMI-2 --off --output HDMI-1 --off --output DP-1 --auto --pos 0x0 --rotate normal --output eDP-1 --off --output DP-2 --off ;;
+	Right) xrandr --output HDMI-2 --off --output HDMI-1 --auto --pos 1920x0 --rotate normal --output DP-1 --auto --pos 1920x0 --rotate normal --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-2 --off ;;
+	Left) xrandr --output HDMI-2 --off --output HDMI-1 --auto --pos 0x0 --rotate normal --output DP-1 --auto --pos 0x0 --rotate normal --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-2 --off ;;
+	"Manual selection") arandr ;;
+esac
+
+#Restart so the background reloads properly
+echo $chosen
+i3-msg restart
+

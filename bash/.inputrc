@@ -1,0 +1,6 @@
+#This is my inputrc to configure Readline
+
+#Show if in normal or insert mode for bash set -o vi
+set show-mode-in-prompt on
+set vi-ins-mode-string "+"
+set vi-cmd-mode-string ":"
