@@ -118,11 +118,13 @@ fi
 
 # Added by muniter for pywal to work properly
 export PATH="${PATH}:${HOME}/.local/bin/"
+export PATH="${PATH}:/snap/bin"
 # My prompt
 export PS1="\[\e[37m\]\u\[\e[m\]@[\[\e[31m\]\h\[\e[m\]]:\W-> "
 
 # Bash Vim mode
 set -o vi
+bind '"jk":vi-movement-mode'
 
 # Define $MYTERM to use in personal scripts
 export MYTERM="xfce4-terminal"
