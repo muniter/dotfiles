@@ -23,6 +23,7 @@ sudo apt-get install \
 	swaylock \
 	waybar \
 	mako \
+    notify-send \
 	wdisplays \
 	wlclipboard \
 	swayidle \
@@ -99,6 +100,10 @@ npm install -g neovim
 ```
 
 To check everythins is working `:checkhealth`.
+
+### Mako
+
+In Ubuntu 20.04 there's an apparmor problem. So It must be disabled for mako `sudo aa-disable /etc/apparmor.d/fr.emersion.Mako`
 
 ### Recoll
 
