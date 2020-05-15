@@ -14,7 +14,8 @@ if __name__ == "__main__":
     options = {
             'lock': 'swaylock',
             'suspend': 'systemctl suspend',
-            'exit sway': 'sway-msg exit', 'reboot': 'reboot',
+            'exit sway': 'swaymsg exit',
+            'reboot': 'reboot',
             'shutdown': 'shutdown -h now',
             }
 
