@@ -1,13 +1,14 @@
 {
-    //"python.jediEnabled": false,
-    //"python.autoComplete.extraPaths": [".venv/lib"],
+    "snippets.userSnippetsDirectory": "~/.config/nvim/plugged/vim-snippets/UltiSnips",
     "html.enable": true,
     "html.autoClosingTags": true,
     "html.format.enable": true,
+    "markdownlint.config":{
+        "line-length": false
+    },
     "languageserver":{"python": {
-    "command": "python",
+    "command": "/home/muniter/.local/bin/pyls",
     "args": [
-      "-mpyls",
       "-vv",
       "--log-file",
       "/tmp/lsp_python.log"

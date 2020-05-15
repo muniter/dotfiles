@@ -7,7 +7,7 @@ set $down j
 set $up k
 set $right l
 set $term alacritty
-set $scripts $HOME/bin
+set $scripts $HOME/bin/scripts
 set $browser firefox
 set $file_manager nautilus
 
@@ -22,27 +22,10 @@ set $menu wofi --show drun
 set $screenshot grim -g "$(slurp)" - | tee /tmp/"$(date +%Y%m%d_%H%M%S)".png | wl-copy
 
 ### Startup
-# exec $scripts/gnome-keyring.sh
+exec mako
 exec $scripts/track_prev_focus
 
-### Output and Input configuration
-# include $HOME/.config/sway/config.d/$(hostname).conf
-
-### Idle configuration
-exec swayidle -w \
-         timeout 600 'swaylock -f -c 000000' \
-         timeout 700 'swaymsg "output * dpms off"' \
-              resume 'swaymsg "output * dpms on"' \
-         before-sleep 'swaylock -f -c 000000'
-
-# This will lock your screen after 600 seconds of inactivity, then turn off
-# your displays after another 100 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
-
-
-### Input configuration
-
-# Inputs are per host based, see at the end of the line.
+### Output, Input and idle configuration in a host specific file
 # include $HOME/.config/sway/config.d/$(hostname).conf
 
 ### Key bindings
@@ -64,10 +47,10 @@ exec swayidle -w \
     floating_modifier $mod normal
 
     # Reload the configuration file
-    bindsym $mod+Shift+c reload
+    bindsym $mod+F2 reload
 
-    # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    # # Little script that show suspend, lock, exit, reboot
+    bindsym $mod+Shift+e exec $scripts/off-wofi
 
 #
 # Added functionality:
@@ -100,10 +83,10 @@ bindsym $mod+Shift+p exec paste
     bindsym $mod+Right focus right
 
     # Move the focused window with the same, but add Shift
-    bindsym $mod+Shift+$left move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+$right move right
+    bindsym $mod+Shift+$left move left 30px
+    bindsym $mod+Shift+$down move down 30px
+    bindsym $mod+Shift+$up move up 30px
+    bindsym $mod+Shift+$right move right 30px
 
     # Ditto, with arrow keys
     bindsym $mod+Shift+Left move left
@@ -113,7 +96,7 @@ bindsym $mod+Shift+p exec paste
 
 # Advanced Movement
     bindsym $mod+Tab workspace back_and_forth
-    # To be implemented, search windows with super tab
+    bindsym $mod+Escape exec $scripts/sway-list-windows
     bindsym $alt+Tab [con_mark="_prev"] focus
 
 #Moving between workspaces
@@ -125,12 +108,15 @@ bindsym $mod+Shift+p exec paste
     bindsym $mod+Control+$alt+l move container to workspace next_on_output, workspace next_on_output
 
 #Opens next free workspace
-    bindsym $mod+o exec $scripts/sway_empty_workspace.py open
-    bindsym $mod+Shift+o exec $scripts/sway_empty_workspace.py move
+    bindsym $mod+o exec $scripts/next-empty-workspace open
+    bindsym $mod+Shift+o exec $scripts/next-empty-workspace move
 
 #
 # Workspaces:
 #
+    # On trying to switch to the current workspace,
+    # Move back
+    workspace_auto_back_and_forth yes
     # Switch to workspace
     bindsym $mod+1 workspace 1
     bindsym $mod+2 workspace 2
@@ -182,7 +168,7 @@ bindsym $mod+Shift+p exec paste
     # only outer gaps when 1 window present
     # inside gaps
     # inner+outer = edge gap
-    smart_gaps inverse_outer                            
+    smart_gaps on
     gaps inner 8                                        
     gaps outer 2                                        
     bindsym $mod+m gaps inner current plus 3
@@ -198,13 +184,15 @@ bindsym $mod+Shift+p exec paste
 # Scratchpad:
 #
     # Initialise windows stored in scratchpad
-    exec  $term --class dropdown -e bash -c tmux -s new dropdown
-    exec  $term --class nnn -e nnn
+    exec  $term -t dropdown -e bash -c tmux -s new dropdown
+    exec  $term -t nnn -e nnn
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # Hides any scratchpad marked with last, or shows the last one marked
+    bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add last
+    bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add last
     bindsym $mod+n [con_mark="last"] scratchpad show
-    bindsym $mod+Shift+n [app_id="^nnn$"] scratchpad show, [app_id="^nnn$"] move position center, mark last
-    bindsym $mod+u [app_id="^dropdown$"] scratchpad show, [app_id="^dropdown$"] move position center, mark last
+    bindsym $mod+c [con_mark="^scratch_whatsapp$"] scratchpad show, move position center
+    bindsym $mod+Shift+c mark scratch_whatsapp
 
     # Move the currently focused window to the scratchpad
     bindsym $mod+Shift+minus mark scratch, move scratchpad
@@ -248,15 +236,22 @@ mode "resize" {
 # Launch mode
 bindsym $mod+i mode "launch"
 mode "launch" {
-        bindsym h [window_role="^wa_app_ha$"] scratchpad show, [window_role="^wa_app_ha$"] move position center, mode "default", mark last
-        bindsym w [window_role="^wa_app_wekan$"] scratchpad show, [window_role="^wa_app_wekan$"] move position center, mode "default", mark last
-        bindsym l [window_role="^wa_app_hei$"] scratchpad show, [window_role="^wa_app_hei$"] move position center, mode "default", mark last
         bindsym b exec $browser, mode "default"
         bindsym f exec $file_manager, mode "default"
         bindsym m exec spotify, mode "default"
         bindsym t exec telegram-desktop, mode "default"
-        bindsym c exec $browser --app="https://web.whatsapp.com/", mode "default"
-        bindsym u exec --no-startup-id $term --class=dropdown
+        bindsym c exec $browser --ssb="https://web.whatsapp.com/", mode "default"
+        bindsym i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add last
+        bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add last
+        bindsym Shift+i mark notes_scratch, move scratchpad
+        bindsym Escape mode "default"
+}
+
+
+# Settings mode
+bindsym $mod+s mode "settings"
+mode "settings" {
+        bindsym s exec $scripts/volume-control change-sink, mode "default"
         bindsym Escape mode "default"
 }
 
@@ -267,23 +262,25 @@ mode "launch" {
 # titlebar_border_thickness 1
 for_window [title=".*"] border pixel 5
 show_marks yes
-bindsym $mod+Shift+y border toggle
-bindsym $mod+y title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
+bindsym $mod+Shift+Insert toggle
+bindsym $mod+Insert title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
+bindsym $mod+y sticky toggle
 
 # Assign Window to Workspace
-assign [class="^TelegramDesktop"] 10
-assign [class="^discord$"] 10
-assign [class="^Spotify$"] 10
+assign [app_id="telegram-desktop_telegram-desktop"] 10
+assign [class="^(discord|Spotify)$"] 10
 
 # Layout
-for_window [app_id="^Alacritty$"] opacity set 0.85
-for_window [con_mark="test"] floating enable, resize set 900 500
 for_window [class="^(Bitwarden)$"] floating enable, resize set 925 600
-for_window [instance="^web.whatsapp.com$"] floating enable, resize set 1200 800
-for_window [app_id="^(pavucontrol|gnome-power-.*)"] floating enable, resize set 925 600
+for_window [app_id="^(pavucontrol|wdisplays|gnome-power-.*)"] floating enable, resize set 925 600
+
+# Opacity
+for_window [app_id="^Alacritty$"] opacity set 0.90
+for_window [title="dropdown"] opacity set 0.84
 
 # scrachpads
-for_window [app_id="^(dropdown|nnn)$"] floating enable, resize set 925 600, move scratchpad, border pixel 5
+for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1000 700, move scratchpad, border pixel 5
+for_window [con_mark="^scratch_whatsapp$"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
 
 
 ### Status Bar:
@@ -294,7 +291,7 @@ exec_always $HOME/.config/waybar/waybar.sh
 ### Function Buttons
 #
 #bindsym $mod+F1
-bindsym $mod+F2 reload
+# F2 is used for reloading
 #bindsym $mod+F3
 #bindsym $mod+F4
 #bindsym $mod+F5	
@@ -307,4 +304,4 @@ bindsym $mod+F7 exec wdisplays
 #bindsym $mod+F12	
 
 ### Include another config file named hostname.conf
-include $HOME/.config/sway/config.d/$(hostname).conf
+include $HOME/.config/sway/conf.d/$(hostname).conf

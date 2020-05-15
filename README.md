@@ -54,7 +54,7 @@ sudo apt-get install \
 	gparted \
 	imagemagick \
 	mpv \
-	mosquitto \
+	mosquitto-clients \
 	recoll
 ```
 ### Using snaps
@@ -104,6 +104,9 @@ To check everythins is working `:checkhealth`.
 ### Mako
 
 In Ubuntu 20.04 there's an apparmor problem. So It must be disabled for mako `sudo aa-disable /etc/apparmor.d/fr.emersion.Mako`
+
+1. Telegram: There's a setting that tells it to use the native notifications (DBus)
+1. Firefox: When libnotify it's intalled firefox will use the native notifications.
 
 ### Recoll
 

@@ -1,0 +1,134 @@
+#!/usr/bin/python3
+
+import subprocess
+import re
+import argparse
+
+# TODO: Use argparse to call mute, change-sink
+# TODO: Implement volume increase
+
+def get_sinks(sink_type='sinks'):
+    '''Get all the available sinks
+    
+    if the sink_type argument is sinks returns a dictionary else returns a
+    list of sinks ID'''
+    pactl_args = ['short', sink_type]
+    if sink_type == 'sinks':
+        pactl_args.pop(0)
+
+    output = subprocess.check_output(['pactl', 'list', *pactl_args],
+                encoding='UTF-8').strip()
+
+    if sink_type == 'sinks':
+        sinks = {}
+        # The first item can be discarded
+        raw_sinks = re.split(r'Sink.*\n', output)[1:]
+
+        for sink_item in raw_sinks:
+            # The sink name and description are in the second capture group (.*)
+            sink_description = re.search(r'(Description: )(.*)\n',
+                    sink_item).group(2)
+            sink_name = re.search(r'(Name: )(.*)\n', sink_item).group(2)
+            # Create the dictionary
+            sinks[sink_description] = sink_name
+
+        return sinks
+    
+    else:
+        # Get all the sinks id and send it as a list
+        raw_sinks = output.split("\n")
+        sinks = [i.split("\t")[0] for i in raw_sinks]
+        return sinks
+
+def get_default_sink():
+    '''Get the default sink symbolic name and return it as type str'''
+    output = subprocess.check_output(['pactl', 'info'], encoding='UTF-8').strip()
+    default_sink = re.search(r'Default Sink: (.*?)\n', output).group(1)
+    return default_sink
+
+
+def wofi(options: list):
+    '''Calls rofi in dmenu mode with the given selection options '''
+    return subprocess.check_output(['wofi','-i', '-k', '/dev/null', '-d'],
+            input='\n'.join(options), encoding='UTF-8').strip('\n')
+
+def mute_sink(sink='all'):
+    '''Mute the provided sink or all if non provided'''
+    if sink == 'all':
+        sinks = get_sinks('sinks').values()
+    else:
+        sink = [sink]
+
+    for sink_id in sinks:
+        subprocess.run(['pactl', 'set-sink-mute', sink_id, 'toggle'])
+
+def move_sink_inputs(sink: str):
+    '''Move all sink inputs to the provided sink'''
+    for sink_id in get_sinks('sink-inputs'):
+        subprocess.run(['pactl', 'move-sink-input', sink_id, sink])
+
+def change_sink(sink=all):
+    '''Change the sink using wofi to select it'''
+    if sink == 'all':
+        sinks = get_sinks('sinks')
+        result = wofi(sinks.keys())
+
+        if result in sinks.keys(): 
+            sink = sinks[result]
+
+    subprocess.run(['pactl', 'set-default-sink', sink])
+    move_sink_inputs(sink)
+
+def volume_set(value, max_vol):
+    '''Increase or decrease the volume according to the value'''
+
+    output = subprocess.check_output(['pactl', 'list', 'sinks'],
+                encoding='UTF-8').strip()
+    default_sink = get_default_sink()
+    # Split on the default sink name and get the second part
+    # which has the volume information needed
+    output = output.split(default_sink)[1]
+    sink_description = re.search(r'(Description: )(.*)\n', output).group(2)
+    sink_volume = re.search(r'(Volume: front-left:.*?/\s+)(\d{1,3})',
+            output).group(2)
+
+    if int(sink_volume) < max_vol:
+        subprocess.run(['pactl', 'set-sink-volume', default_sink, value])
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Manipualte  pulseaudio')
+    parser.add_argument('action', type=str,
+            help='The action',
+            choices=[
+                'mute-sink',
+                'change-sink',
+                'move-sink-inputs',
+                'volume-set'
+                    ])
+    parser.add_argument('sink', type=str,
+            help='The sink id or symbolic name',
+            default='all',
+            nargs='?')
+    parser.add_argument(
+            '-M',
+            '--max',
+            type=int,
+            help='The max volume of the sink as 100',
+            required=False,
+            default=115)
+    parser.add_argument('volume',
+            type=str,
+            help='The amount to set the volume can be +10%',
+            default='0',
+            nargs='?')
+    args = parser.parse_args()
+
+    if args.action == 'change-sink':
+        change_sink(args.sink)
+    if args.action == 'mute-sink':
+        mute_sink(args.sink)
+    if args.action == 'move_sink_inputs':
+        mute_sink(args.sink)
+    if args.action == 'volume-set':
+        volume_set(args.volume, args.max)

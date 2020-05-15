@@ -127,7 +127,7 @@ set -o vi
 bind '"jk":vi-movement-mode'
 
 # Define $MYTERM to use in personal scripts
-export MYTERM="xfce4-terminal"
+export MYTERM="alacritty"
 
 # Settings for nnn
 export EDITOR="vim"
@@ -146,3 +146,31 @@ n()
 
 # Settings for fuzzy finder
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [ -n "$DESKTOP_SESSION" ];then
+    eval $(gnome-keyring-daemon --start)
+    export SSH_AUTH_SOCK
+fi
+
+# Hass-cli Completion
+_hass_cli_completion() {
+    local IFS=$'
+'
+    COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \
+                   COMP_CWORD=$COMP_CWORD \
+                   _HASS_CLI_COMPLETE=complete $1 ) )
+    return 0
+}
+
+_hass_cli_completionetup() {
+    local COMPLETION_OPTIONS=""
+    local BASH_VERSION_ARR=(${BASH_VERSION//./ })
+    # Only BASH version 4.4 and later have the nosort option.
+    if [ ${BASH_VERSION_ARR[0]} -gt 4 ] || ([ ${BASH_VERSION_ARR[0]} -eq 4 ] && [ ${BASH_VERSION_ARR[1]} -ge 4 ]); then
+        COMPLETION_OPTIONS="-o nosort"
+    fi
+
+    complete $COMPLETION_OPTIONS -F _hass_cli_completion hass-cli
+}
+
+_hass_cli_completionetup;

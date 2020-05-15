@@ -1,4 +1,0 @@
-#!/bin/bash
-#Script to launc rtv in its python3 virtual enviroment
-
-$HOME/programs/rtv-venv/bin/python3 $HOME/programs/rtv-venv/bin/rtv

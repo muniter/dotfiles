@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+'''The following script is used with sway window manager, to switch to the next
+empty workspace available, or switch the focused window to said workspace.
+Just run the script and provide argumen open or move'''
+
+import json
+import subprocess
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("action", help="open or move")
+args = parser.parse_args()
+
+output = subprocess.check_output(['swaymsg', '-r', '-t', 'get_workspaces'])
+# List of dictionaries with each workspace properties
+# The workspace number is extracted and put in a list
+workspaces = [w['num'] for w in json.loads(output)]
+
+# Finds missing number e.g next empty workspace
+# added 2 to range, otherwise if only 1 item is return next would fail
+next_num = next(i for i in range(1, max(workspaces)+2) if i not in workspaces)
+
+if args.action == 'open':
+    subprocess.call(['swaymsg', 'workspace number %i' % next_num])
+
+elif args.action == 'move':
+    subprocess.call(['swaymsg', 'move container to workspace %i' % next_num])
+    subprocess.call(['swaymsg', 'workspace number %i' % next_num])
