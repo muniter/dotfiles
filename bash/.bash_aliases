@@ -1,6 +1,6 @@
 #Connecting to my servers
 alias swc="vim $HOME/.config/sway/config"
-alias swch="vim $HOME/.config/sway/config.d/$(hostname).conf"
+alias swcp="vim $HOME/.config/sway/conf.d/$(hostname).conf"
 alias vr="vim $HOME/.config/nvim/init.vim"
 alias df="df -h -x squashfs"
 alias nn="nnn ~/Sync/notes"
