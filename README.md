@@ -66,6 +66,7 @@ sudo snap install telegram-desktop spotify discord gimp inkscape bitwarden
 Youtube-dl on pip it's more updated.
 ```
 pip3 install --user youtube-dl
+pip3 install i3ipc
 ```
 
 ### Manually install
