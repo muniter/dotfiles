@@ -272,7 +272,7 @@ assign [class="^(discord|Spotify)$"] 10
 
 # Layout
 for_window [class="^(Bitwarden)$"] floating enable, resize set 925 600
-for_window [app_id="^(pavucontrol|wdisplays|gnome-power-.*)"] floating enable, resize set 925 600
+for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-power-.*)"] floating enable, resize set 925 600
 
 # Opacity
 for_window [app_id="^Alacritty$"] opacity set 0.90
