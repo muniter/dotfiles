@@ -262,7 +262,7 @@ mode "settings" {
 # titlebar_border_thickness 1
 for_window [title=".*"] border pixel 5
 show_marks yes
-bindsym $mod+Shift+Insert toggle
+bindsym $mod+Shift+comma border toggle
 bindsym $mod+Insert title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
 bindsym $mod+y sticky toggle
 

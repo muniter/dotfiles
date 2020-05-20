@@ -17,6 +17,7 @@ Plug 'danro/rename.vim'                         "Rename files with vim
 Plug 'christoomey/vim-tmux-navigator'           "Easy pane switching with tmux
 Plug 'vim-airline/vim-airline'                  "airline
 Plug 'vim-airline/vim-airline-themes'           "airline
+Plug 'chrisbra/colorizer'                       "Color highlighting
 Plug 'honza/vim-snippets'                       "Some useful snippets
 Plug 'vim-scripts/nginx.vim'                    "Nginx filetype forma t
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } } "firefox vim
@@ -107,7 +108,7 @@ inoremap {, {<CR>},<C-c>O
 inoremap [; [<CR>];<C-c>O
 inoremap [, [<CR>],<C-c>O
 
-"Quick terminal
+"Quick small terminal
 command! -nargs=0 Term :10sp +term
 
 "Change abbreviation for vertical
@@ -130,6 +131,7 @@ map <Leader>p a<space><Esc>p
 nnoremap <leader><leader> :nohlsearch<CR>
 
 "Extensions
+nnoremap <C-p> :Files<CR>
 
 "Airline config
 let g:airline_powerline_fonts = 1
