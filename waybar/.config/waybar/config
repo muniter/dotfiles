@@ -8,6 +8,7 @@
 		"network",
 		"custom/mhz",
 		"cpu",
+        "temperature",
 		"battery#bat1",
 		"battery#bat0",
         "pulseaudio",
@@ -107,6 +108,12 @@
 	"custom/rotate": {
 		"format": "🌀"
 	},
+    "temperature": {
+        "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+        "critical-threshold": 80,
+        "format-critical": "{temperatureC}°C ",
+        "format": "{temperatureC}°C "
+    },
 	"custom/run": {
 		"format": "",
 		"on-click": "wofi --show drun"
