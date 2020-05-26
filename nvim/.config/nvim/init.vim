@@ -162,12 +162,6 @@ let g:firenvim_config = {
     \ }
 \ }
 
-    " Full Stack dev proper indent
-    au BufNewFile,BufRead *.js, *.html, *.css
-                \ set tabstop=2
-                \ set softtabstop=2
-                \ set shiftwidth=2
-
     augroup AutoCmd
         "MARKDOWN
         autocmd Filetype markdown nnoremap <leader>bb 0i**<Esc>A**<Esc>0
@@ -203,7 +197,7 @@ let g:firenvim_config = {
 "--------------------- Coc ---------------------"
 
 "Default extensions to add
-let g:coc_global_extensions = ['coc-json', 'coc-yaml', 'coc-python', 'coc-html', 'coc-css', 'coc-snippets', 'coc-markdownlint', 'coc-marketplace']
+let g:coc_global_extensions = ['coc-json', 'coc-yaml', 'coc-python', 'coc-tsserver', 'coc-html', 'coc-css', 'coc-snippets', 'coc-markdownlint', 'coc-marketplace']
 " Here coc will store all the data, instead of polluting .config
 let g:coc_data_home ="~/.config/nvim/plugged/coc.nvim/data"
 
