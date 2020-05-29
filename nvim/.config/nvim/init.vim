@@ -110,6 +110,8 @@ inoremap [, [<CR>],<C-c>O
 
 "Quick small terminal
 command! -nargs=0 Term :10sp +term
+" New Tab Terminal
+command! -nargs=0 TTerm :tabnew +term
 
 "Change abbreviation for vertical
 cnoreabbrev v vert
@@ -223,7 +225,7 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_next = '<c-j>'
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
