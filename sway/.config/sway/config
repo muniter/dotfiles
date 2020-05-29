@@ -188,9 +188,9 @@ bindsym $mod+Shift+p exec paste
     exec  $term -t nnn -e nnn
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # Hides any scratchpad marked with last, or shows the last one marked
-    bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add last
-    bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add last
-    bindsym $mod+n [con_mark="last"] scratchpad show
+    bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
+    bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add _last
+    bindsym $mod+n [con_mark="_last"] scratchpad show
     bindsym $mod+c [con_mark="^scratch_whatsapp$"] scratchpad show, move position center
     bindsym $mod+Shift+c mark scratch_whatsapp
 
@@ -241,9 +241,9 @@ mode "launch" {
         bindsym m exec spotify, mode "default"
         bindsym t exec telegram-desktop, mode "default"
         bindsym c exec $browser --ssb="https://web.whatsapp.com/", mode "default"
-        bindsym i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add last
-        bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add last
-        bindsym Shift+i mark notes_scratch, move scratchpad
+        bindsym i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
+        bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
+        bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
         bindsym Escape mode "default"
 }
 
