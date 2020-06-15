@@ -14,6 +14,7 @@ if __name__ == "__main__":
     options = {
             'lock': 'swaylock',
             'suspend': 'systemctl suspend',
+            'suspend & office': 'curl -d "" homeassistant.loc:8123/api/webhook/office_nfc09945612',
             'exit sway': 'swaymsg exit',
             'reboot': 'reboot',
             'shutdown': 'shutdown -h now',

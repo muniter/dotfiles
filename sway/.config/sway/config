@@ -17,13 +17,15 @@ set $reboot sudo reboot
 set $netrefresh  sudo systemctl restart NetworkManager
 set $hibernate sudo systemctl suspend
 set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
-set $menu wofi --show drun
+set $menu wofi -i --show drun
 # Screenshot of selection to stdout, saving to a file and into clipboard
 set $screenshot grim -g "$(slurp)" - | tee /tmp/"$(date +%Y%m%d_%H%M%S)".png | wl-copy
 
 ### Startup
 exec mako
 exec $scripts/track_prev_focus
+# TODO change the script so it changes opacity relatively
+exec $scripts/fader
 
 ### Output, Input and idle configuration in a host specific file
 # include $HOME/.config/sway/config.d/$(hostname).conf
@@ -245,6 +247,8 @@ mode "launch" {
         bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
         bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
         bindsym Escape mode "default"
+        bindsym Shift+d exec  $term -t dropdown -e bash -c tmux -s new dropdown, mode "default"
+        bindsym Shift+n exec  $term -t nnn -e nnn, mode "default"
 }
 
 
@@ -277,6 +281,7 @@ for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-power-.*)"] floating e
 # Opacity
 for_window [app_id="^Alacritty$"] opacity set 0.90
 for_window [title="dropdown"] opacity set 0.84
+for_window [con_mark="^notes_scratch$"] opacity set 0.80
 
 # scrachpads
 for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1000 700, move scratchpad, border pixel 5
