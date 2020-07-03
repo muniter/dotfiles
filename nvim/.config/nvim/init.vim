@@ -13,6 +13,7 @@ Plug 'mbbill/undotree'                          "Undo tree
 Plug 'tpope/vim-fugitive'                       "Git integration/wrapper
 Plug 'tpope/vim-surround'                       "Surroun parentheses, brackets, etc
 Plug 'tpope/vim-repeat'                         "Repeat plugins custom mappings like surround.
+Plug 'ThePrimeagen/vim-be-good', {'do': './install.sh'} "This game will make you go so fast, you'll need some coconut oil.
 Plug 'danro/rename.vim'                         "Rename files with vim
 Plug 'christoomey/vim-tmux-navigator'           "Easy pane switching with tmux
 Plug 'vim-airline/vim-airline'                  "airline
@@ -24,6 +25,7 @@ Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } } "firefox vim
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } "markdown preview
 Plug 'junegunn/fzf'                             "fuzzy search
 Plug 'junegunn/fzf.vim', { 'do': { -> fzf#install() } } "fuzze search functions e.g Files, Buffers
+Plug 'jamestthompson3/nvim-remote-containers'
 "
 call plug#end()
 
@@ -108,10 +110,18 @@ inoremap {, {<CR>},<C-c>O
 inoremap [; [<CR>];<C-c>O
 inoremap [, [<CR>],<C-c>O
 
+" Move last copy item to the + register
+nnoremap ,sr :let @+ = @0<CR>
+
 "Quick small terminal
 command! -nargs=0 Term :10sp +term
 " New Tab Terminal
 command! -nargs=0 TTerm :tabnew +term
+" Create file in non existant and go to it.
+noremap <leader>gf :e <cfile><cr>
+
+" Save as Root
+command! -nargs=0 Sroot :w !sudo tee %
 
 "Change abbreviation for vertical
 cnoreabbrev v vert
@@ -134,6 +144,7 @@ nnoremap <leader><leader> :nohlsearch<CR>
 
 "Extensions
 nnoremap <C-p> :Files<CR>
+nnoremap <C-b> :Buffers<CR>
 
 "Airline config
 let g:airline_powerline_fonts = 1
@@ -212,7 +223,7 @@ inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> pumvisible() ? "\<C-n>" : "\<C-p>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
