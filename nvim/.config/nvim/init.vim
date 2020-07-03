@@ -135,6 +135,7 @@ nnoremap <silent> <Leader>- :exe "resize " . (winheight(0) * 5/6)<CR>
 
 "Inserting a New line
 map <Leader>o o<Esc>
+map <Leader>O O<Esc>
 
 "Pasting after adding a space
 map <Leader>p a<space><Esc>p
