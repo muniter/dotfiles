@@ -1,75 +1,10 @@
 {
-    "snippets.userSnippetsDirectory": "~/.config/nvim/plugged/vim-snippets/UltiSnips",
+    "snippets.ultisnips.directories": ["~/.config/nvim/plugged/vim-snippets/UltiSnips"],
+    "suggest.autoTrigger": "always",
     "html.enable": true,
     "html.autoClosingTags": true,
     "html.format.enable": true,
     "markdownlint.config":{
         "line-length": false
-    },
-    "languageserver":{"python": {
-    "command": "/home/muniter/.local/bin/pyls",
-    "args": [
-      "-vv",
-      "--log-file",
-      "/tmp/lsp_python.log"
-    ],
-    "trace.server": "verbose",
-    "filetypes": [
-      "python"
-    ],
-    "settings": {
-      "pyls": {
-        "enable": false,
-        "trace": {
-          "server": "verbose"
-        },
-        "commandPath": "",
-        "configurationSources": [
-          "pycodestyle"
-        ],
-        "plugins": {
-          "jedi_completion": {
-            "enabled": true
-          },
-          "jedi_hover": {
-            "enabled": true
-          },
-          "jedi_references": {
-            "enabled": true
-          },
-          "jedi_signature_help": {
-            "enabled": true
-          },
-          "jedi_symbols": {
-            "enabled": true,
-            "all_scopes": true
-          },
-          "mccabe": {
-            "enabled": true,
-            "threshold": 15
-          },
-          "preload": {
-            "enabled": true
-          },
-          "pycodestyle": {
-            "enabled": true
-          },
-          "pydocstyle": {
-            "enabled": true,
-            "match": "(?!test_).*\\.py",
-            "matchDir": "[^\\.].*"
-          },
-          "pyflakes": {
-            "enabled": true
-          },
-          "rope_completion": {
-            "enabled": true
-          },
-          "yapf": {
-            "enabled": true
-          }
-        }
-      }
     }
-  }}
 }

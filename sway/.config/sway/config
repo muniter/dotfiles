@@ -19,13 +19,15 @@ set $hibernate sudo systemctl suspend
 set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu wofi -i --show drun
 # Screenshot of selection to stdout, saving to a file and into clipboard
-set $screenshot grim -g "$(slurp)" - | tee /tmp/"$(date +%Y%m%d_%H%M%S)".png | wl-copy
+set $screenshot grim -g "$(slurp)" - | tee /tmp/"screenshot_$(date +%Y%m%d_%H%M%S)".png | wl-copy
+set $record wf-recorder -a -g "$(slurp)" -f /tmp/"recording_$(date +%Y%m%d_%H%M%S)".mp4
+set $record-stop killall -s SIGINT wf-recorder
 
 ### Startup
 exec mako
 exec $scripts/track_prev_focus
-# TODO change the script so it changes opacity relatively
-exec $scripts/fader
+# TODO Use it to show focus only.
+#exec $scripts/fader
 
 ### Output, Input and idle configuration in a host specific file
 # include $HOME/.config/sway/config.d/$(hostname).conf
@@ -43,6 +45,9 @@ exec $scripts/fader
 
     # Start your launcher
     bindsym $mod+d exec $menu
+    # Type emoji
+    bindsym $mod+Shift+u exec $scripts/dmenu-emoji.sh
+
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -62,6 +67,9 @@ bindsym $mod+Home exec pkill -USR1 redshift
 
 # Screenshot selection
 bindsym --release Shift+Print exec $screenshot
+bindsym --release $mod+Shift+Print exec $record, exec notify-send "Now recording"
+bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
+
 bindsym $mod+Shift+p exec paste
 
 
@@ -147,7 +155,7 @@ bindsym $mod+Shift+p exec paste
 # Layout stuff:
 #
     # You can "split" the current object of your focus with
-    bindsym $mod+t split toggle
+    bindsym $mod+s split toggle
 
     # Switch the current container between different layout styles
     bindsym $mod+e layout stacking
@@ -170,11 +178,12 @@ bindsym $mod+Shift+p exec paste
     # only outer gaps when 1 window present
     # inside gaps
     # inner+outer = edge gap
+    smart_borders on
     smart_gaps on
     gaps inner 8                                        
     gaps outer 2                                        
-    bindsym $mod+m gaps inner current plus 3
-    bindsym $mod+Shift+m gaps inner current minus 3
+    bindsym $mod+m gaps inner current plus 5
+    bindsym $mod+Shift+m gaps inner current minus 5
 
 #
 # Theme stuff
@@ -194,15 +203,11 @@ bindsym $mod+Shift+p exec paste
     bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add _last
     bindsym $mod+n [con_mark="_last"] scratchpad show
     bindsym $mod+c [con_mark="^scratch_whatsapp$"] scratchpad show, move position center
-    bindsym $mod+Shift+c mark scratch_whatsapp
 
-    # Move the currently focused window to the scratchpad
+    # To send any window I want to the scratchpad
     bindsym $mod+Shift+minus mark scratch, move scratchpad
-    # Show window marked with previous mark
     bindsym $mod+minus [con_mark="^scratch$"] scratchpad show
 
-    # scratchpad web apps
-    # for window
 #
 # Modes
 #
@@ -240,22 +245,58 @@ bindsym $mod+i mode "launch"
 mode "launch" {
         bindsym b exec $browser, mode "default"
         bindsym f exec $file_manager, mode "default"
+
+        # Gitter
+        bindsym g exec gitter, mode "default"
+        bindsym $mod+g [class="^Gitter$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Spotify
         bindsym m exec spotify, mode "default"
+        bindsym $mod+m [class="^Spotify$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Discord
+        bindsym d exec discord, mode "default"
+        bindsym $mod+d [class="^discord$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Telegram
         bindsym t exec telegram-desktop, mode "default"
+        bindsym $mod+t [app_id="telegram-desktop_telegram-desktop"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Whatsapp
         bindsym c exec $browser --ssb="https://web.whatsapp.com/", mode "default"
+        bindsym $mod+Shift+c mark scratch_whatsapp, mode "default"
+
+        # Bitwarden
+        bindsym p exec bitwarden, mode "default"
+        bindsym $mod+p [class="^Bitwarden$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Notes Scratchpad
+        bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
         bindsym i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
         bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
-        bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
+
+
         bindsym Escape mode "default"
+
+        # Bring back dropdown in case closed.
         bindsym Shift+d exec  $term -t dropdown -e bash -c tmux -s new dropdown, mode "default"
         bindsym Shift+n exec  $term -t nnn -e nnn, mode "default"
 }
 
 
 # Settings mode
-bindsym $mod+s mode "settings"
+bindsym $mod+t mode "settings"
 mode "settings" {
         bindsym s exec $scripts/volume-control change-sink, mode "default"
+        bindsym p exec pavucontrol, mode "default"
+        bindsym Escape mode "default"
+}
+
+# Settings mode
+bindsym $mod+Shift+s mode "layout"
+mode "layout" {
+        bindsym h split vertical, focus left, move right, layout stacking, focus up, mode "default"
+        bindsym l split vertical, focus right, move left, layout stacking, focus up, mode "default"
         bindsym Escape mode "default"
 }
 
@@ -270,22 +311,22 @@ bindsym $mod+Shift+comma border toggle
 bindsym $mod+Insert title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
 bindsym $mod+y sticky toggle
 
-# Assign Window to Workspace
-assign [app_id="telegram-desktop_telegram-desktop"] 10
-assign [class="^(discord|Spotify)$"] 10
-
 # Layout
-for_window [class="^(Bitwarden)$"] floating enable, resize set 925 600
 for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-power-.*)"] floating enable, resize set 925 600
 
 # Opacity
-for_window [app_id="^Alacritty$"] opacity set 0.90
+for_window [app_id="^Alacritty$"] opacity set 0.9
 for_window [title="dropdown"] opacity set 0.84
 for_window [con_mark="^notes_scratch$"] opacity set 0.80
 
 # scrachpads
-for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1000 700, move scratchpad, border pixel 5
+for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1200 900, move scratchpad, border pixel 5
 for_window [con_mark="^scratch_whatsapp$"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
+for_window [class="^(Gitter|discord)$"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
+for_window [app_id="telegram-desktop_telegram-desktop"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
+
+for_window [class="^Spotify$"] floating enable, resize set 2000 1200, move scratchpad, border pixel 1
+for_window [class="^Bitwarden$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
 
 
 ### Status Bar:

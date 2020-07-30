@@ -20,11 +20,11 @@ draw_bold_text_with_bright_colors: true
 
 font:
   normal:
-    family: DejaVu Sans Mono
+    family: Deja Vu Sans Mono
   bold:
-    family: monospace
+    family: Deja Vu Sans Mono
   italic:
-    family: monospace
+    family: Deja Vu Sans Mono
   size: 12.0
 
   # Offset is the extra space around each character. offset.y can be thought of

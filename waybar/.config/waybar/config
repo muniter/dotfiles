@@ -7,8 +7,9 @@
     "modules-right": [
 		"network",
 		"custom/mhz",
-		"cpu",
         "temperature",
+		"cpu",
+        "memory",
 		"battery#bat1",
 		"battery#bat0",
         "pulseaudio",
@@ -114,12 +115,17 @@
         "format-critical": "{temperatureC}°C ",
         "format": "{temperatureC}°C "
     },
-	"custom/run": {
-		"format": "",
-		"on-click": "wofi --show drun"
-	},
-    "tray": {
-    "icon-size": 21,
-    "spacing": 10
-    }
+    "memory": {
+        "interval": 30,
+        "format": "Mem: {}%",
+        "max-length": 10
+    },
+    "custom/run": {
+        "format": "",
+        "on-click": "wofi --show drun"
+    },
+        "tray": {
+            "icon-size": 21,
+            "spacing": 10
+        }
 }

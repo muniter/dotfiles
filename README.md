@@ -19,51 +19,57 @@ Currently not in the ubuntu repos. Can get `.deb` from `https://github.com/alacr
 
 ```
 sudo apt-get install \
-	sway \
-	swaylock \
-	waybar \
-	mako \
+    sway \
+    swaylock \
+    waybar \
+    mako \
     notify-send \
-	wdisplays \
-	wlclipboard \
-	swayidle \
-	brightnessctl \ 
-	playerctl
-	wofi \
-	nnn \
-	fzf \
-	grim \
-	slurp \
-	git \
-	sshfs \
-	ssh-askpass-gnome \
-	jq \
-	neovim \
-	fonts-powerline \
-    fonts-font-awesome \
-	tmux \
-	pdfarranger \
-	stow \
-	tldr \
-	htop \
-	arandr \
-	python3-pip \
-	snapper \
-	lm-sensors \
-	curl \
-	gparted \
-	imagemagick \
-	mpv \
-	mosquitto-clients \
-	recoll
+    wdisplays \
+    wlclipboard \
+    swayidle \
+    brightnessctl \
+    playerctl
+    wofi \
+    nnn \
+    fzf \
+    grim \
+    slurp \
+    git \
+    sshfs \
+    ssh-askpass-gnome \
+    jq \
+    neovim \
+    python3-neovim \
+    fonts-powerline \
+        fonts-font-awesome \
+    tmux \
+    pdfarranger \
+    stow \
+    tldr \
+    htop \
+    arandr \
+    python3-pip \
+    snapper \
+    lm-sensors \
+    curl \
+    gparted \
+    imagemagick \
+    mpv \
+    mosquitto-clients \
+    recoll \
+    ctags \
+    ripgrep \
 ```
+
 ### Using snaps
+
 ```
 sudo snap install telegram-desktop spotify discord gimp inkscape bitwarden
 ```
 
 ### Using pip
 Youtube-dl on pip it's more updated.
+
 ```
 pip3 install --user youtube-dl
 pip3 install i3ipc
@@ -72,7 +78,9 @@ pip3 install i3ipc
 ### Manually install
 
 #### docker-ce
+
 Setting up docker using the auto install script
+
 ```
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
