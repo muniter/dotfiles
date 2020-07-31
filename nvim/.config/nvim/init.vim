@@ -46,12 +46,17 @@ Plug 'majutsushi/tagbar'
 "Plug 'plasticboy/vim-markdown'
 "Plug 'gabrielelana/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } "markdown preview
+" Scramble arguments around <leader>ar and <leader>al
+Plug 'AndrewRadev/sideways.vim'
 " }}}
 " LSP {{{
 " Configurations for neovim built in lsp.
 Plug 'neovim/nvim-lsp'                        "Nvim lsp configuration examples
 Plug 'nvim-lua/lsp-status.nvim'               "Status lsp integration
 Plug 'nvim-lua/completion-nvim'
+Plug 'steelsojka/completion-buffers'
+"TODO: Test this
+Plug 'aca/completion-tabnine', { 'do': './install.sh' }
 Plug 'nvim-lua/diagnostic-nvim'
 "}}}
 "Snippets {{{
@@ -79,8 +84,9 @@ Plug 'norcalli/typeracer.nvim'
 "Plug 'guns/vim-sexp' "Used and recommended by tpope
 " }}}
 " Testing {{{
-" Todo.txt
-Plug 'https://gitlab.com/dbeniamine/todo.txt-vim'
+" TODO: I need the nix package manager.
+" Zettelkasten
+Plug 'ihsanturk/neuron.vim'
 " Org mode
 Plug 'dhruvasagar/vim-dotoo'
 " One line expressions to multi line
@@ -88,10 +94,6 @@ Plug 'AndrewRadev/splitjoin.vim'
 " Tabulate things
 Plug 'godlygeek/tabular'
 "TODO Use this
-" Scramble arguments around <leader>ar and <leader>arl
-Plug 'AndrewRadev/sideways.vim'
-" This plugin move to node, probably won't use anymore
-"Plug 'yuki-ycino/fzf-preview.vim'
 " Switches expressions
 Plug 'AndrewRadev/switch.vim'
 " }}}
@@ -108,13 +110,13 @@ set encoding=utf-8
 set showcmd                 "show command in bottom bar
 set cursorline              "highlight current line
 set wildmenu                "visual autocomplete for commands
-"set wildmode-=list
-"set wildmode+=longest
-"set wildmode+=full
-"" Makes floating PopUpMenu for completing stuff on the command line.
-""     Very similar to completing in insert mode.
-"set wildoptions+=pum
+set wildchar=<Tab>          "Character to trigger command line expansion > completion
+set wildmode=longest,full   "Complete longest common string, then each full match
+set wildoptions+=pum        "Command line completion using PopUpMenu pum
+set winblend=50             "Pseudo-transparent pum window
 set completeopt=menuone,noinsert,noselect
+set pumheight=30
+set pumwidth=15
 set showmatch               "highlight matching [{()}]
 set display=lastline        "show as much as possible of a wrapped line no just @
 set background=dark
@@ -122,7 +124,7 @@ set incsearch               "search as characters are entered
 set hlsearch                "highlight matches
 set ignorecase              "ignore case when searching
 set smartcase               "dont ignore case if a capital letter present
-set path+=**
+" set path+=**
 set wildignore=*.pyc,*pycache*,*~
 set wildignore+=__pycache__
 set tabstop=4               "number of visual space per tab
@@ -166,6 +168,8 @@ set breakindent
 let &showbreak=repeat(' ', 3)
 set linebreak
 
+"TODO: Dont close open folds when writting.
+"TODO: Fix issues when pasting having ^M
 ""Conceal
 "augroup Bible
 "    autocmd BufReadPost reina_valera_1960.md :syntax match Concealed '^\d*\.\I\{3\}\.\d*\.' conceal
@@ -412,17 +416,12 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ }
 
-"Todo.txt
-
-nnoremap <leader>to :e ~/notes/todo.txt<CR>
-au filetype todo setlocal omnifunc=todo#Complete
-au filetype todo imap <buffer> + +<C-X><C-O>
-au filetype todo imap <buffer> @ @<C-X><C-O>
-let g:Todo_fold_char='+'
-
 " dotoo
 let g:dotoo#agenda#files = ['~/notes/dotoo/*.dotoo']
 command! -nargs=0 Agenda :call dotoo#agenda#agenda()<CR>
+
+"Neuron Zettelkasten
+let g:zkdir = $HOME.'/notes/zettel'
 
 " Filetype unique configuration {{{
 " Yaml configuration
@@ -438,13 +437,36 @@ set hidden
 " }}}
 
 " LSP Configuration {{{
-lua require'nvim_lsp'.pyls.setup({ enable=true, on_attach=require'completion'.on_attach, plugins={pycodestyle={ignore={"W191","W1"}, } } })
+lua require'nvim_lsp'.pyls.setup({enable=true, on_attach=require'completion'.on_attach, plugins={pycodestyle={ignore={"W191","W1"}, } } })
 lua require'nvim_lsp'.tsserver.setup({enable=true, on_attach=require'completion'.on_attach})
 
 "Allow snippets
+"let g:UltiSnipsExpandTrigger = "\<tab>"
+"let g:UltiSnipsJumpForwardTrigger ="\<c-j>"
+"let g:UltiSnipsJumpBackwardTrigger = "\<c-k>"
 let g:completion_enable_snippet = 'UltiSnips'
 let g:completion_confirm_key = "\<c-k>"
-
+" Complete pair [({ when method confirmed
+let g:completion_enable_auto_paren = 1
+" Change source when current options are empty
+let g:completion_auto_change_source = 1
+let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+" Character that will trigger completion
+let g:completion_trigger_character = ['.']
+" Completion chain, can change between and emualte vim modes when there's no
+" matches for LSP or SNIPPET,  <C-X><C-P> will pop up.
+let g:completion_chain_complete_list = {
+            \'default' : [
+            \    {'complete_items': ['lsp', 'snippet']},
+            \    {'complete_items': ['buffer']},
+            \    {'complete_items': ['buffers']},
+            \    {'mode': 'file'},
+            \    {'complete_items': ['path'], 'triggered_only': ['/']},
+            \]
+            \}
+" TODO: Find good mappings for this
+" imap <expr> <c-j>  pumvisible() ? <Plug>(completion_next_source)":  ""
+" imap <expr> <c-k>  pumvisible() ? <Plug>(completion_prev_source)":  ""
 "Check if LSP is working on the current buffer
 nnoremap <space>lsp <cmd>lua print(vim.inspect(vim.lsp.buf_get_clients()))<CR>
 nnoremap <space>lspr <cmd>lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR>
