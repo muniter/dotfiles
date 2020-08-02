@@ -56,7 +56,7 @@ Plug 'nvim-lua/lsp-status.nvim'               "Status lsp integration
 Plug 'nvim-lua/completion-nvim'
 Plug 'steelsojka/completion-buffers'
 "TODO: Test this
-Plug 'aca/completion-tabnine', { 'do': './install.sh' }
+"Plug 'aca/completion-tabnine', { 'do': './install.sh' }
 Plug 'nvim-lua/diagnostic-nvim'
 "}}}
 "Snippets {{{
@@ -78,7 +78,6 @@ Plug 'norcalli/typeracer.nvim'
 " }}}
 " Investigate {{{
 " Easy changing spelling.
-" TODO Investigate this snippets providers
 " TODO add comment what this is
 "Plug 'tweekmonster/spellrotate.vim'
 "Plug 'guns/vim-sexp' "Used and recommended by tpope
@@ -354,7 +353,7 @@ let g:undotree_SetFocusWhenToggle = 1
 "nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>Files<CR>'
 nnoremap <silent><expr> <M-/> v:count ? ':<C-U>Rg<CR> ' : ':<C-U>Files<CR>'
 nnoremap <silent><expr> <M-?> v:count ? 'mS:<C-U>Lines<CR>' : ':<C-U>Buffers<CR>'
-nnoremap <silent>gN :Files ~/notes<CR>
+" nnoremap <silent>gN :Files ~/notes<CR>
 " Search MRU files
 nnoremap <silent>       <M-\> :History<cr>
 nmap                    g/    <M-/>
@@ -364,6 +363,9 @@ nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
 "}}}
 
 "{{{ Insert Mode and Helpers
+"Move arround in insert mode
+inoremap <M-l> <Right>
+inoremap <M-h> <Left>
 " Abbreviations
 iabbrev c] [ ]
 iabbrev <expr> dts] strftime("%Y-%m-%d")
@@ -444,6 +446,7 @@ lua require'nvim_lsp'.tsserver.setup({enable=true, on_attach=require'completion'
 "let g:UltiSnipsExpandTrigger = "\<tab>"
 "let g:UltiSnipsJumpForwardTrigger ="\<c-j>"
 "let g:UltiSnipsJumpBackwardTrigger = "\<c-k>"
+let g:UltiSnipsSnippetDirectories=["UltiSnips", "mysnippets"]
 let g:completion_enable_snippet = 'UltiSnips'
 let g:completion_confirm_key = "\<c-k>"
 " Complete pair [({ when method confirmed
@@ -461,10 +464,13 @@ let g:completion_chain_complete_list = {
             \    {'complete_items': ['buffer']},
             \    {'complete_items': ['buffers']},
             \    {'mode': 'file'},
+            \    {'mode': 'line'},
             \    {'complete_items': ['path'], 'triggered_only': ['/']},
             \]
             \}
 " TODO: Find good mappings for this
+imap  <c-j> <Plug>(completion_next_source)
+imap  <c-k> <Plug>(completion_prev_source)
 " imap <expr> <c-j>  pumvisible() ? <Plug>(completion_next_source)":  ""
 " imap <expr> <c-k>  pumvisible() ? <Plug>(completion_prev_source)":  ""
 "Check if LSP is working on the current buffer

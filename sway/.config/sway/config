@@ -18,6 +18,8 @@ set $netrefresh  sudo systemctl restart NetworkManager
 set $hibernate sudo systemctl suspend
 set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu wofi -i --show drun
+set $dropdown $term -t dropdown -e zsh
+
 # Screenshot of selection to stdout, saving to a file and into clipboard
 set $screenshot grim -g "$(slurp)" - | tee /tmp/"screenshot_$(date +%Y%m%d_%H%M%S)".png | wl-copy
 set $record wf-recorder -a -g "$(slurp)" -f /tmp/"recording_$(date +%Y%m%d_%H%M%S)".mp4
@@ -195,7 +197,7 @@ bindsym $mod+Shift+p exec paste
 # Scratchpad:
 #
     # Initialise windows stored in scratchpad
-    exec  $term -t dropdown -e bash -c tmux -s new dropdown
+    exec  $dropdown
     exec  $term -t nnn -e nnn
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # Hides any scratchpad marked with last, or shows the last one marked
@@ -279,7 +281,7 @@ mode "launch" {
         bindsym Escape mode "default"
 
         # Bring back dropdown in case closed.
-        bindsym Shift+d exec  $term -t dropdown -e bash -c tmux -s new dropdown, mode "default"
+        bindsym Shift+d exec  $dropdown, mode "default"
         bindsym Shift+n exec  $term -t nnn -e nnn, mode "default"
 }
 

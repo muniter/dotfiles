@@ -5,11 +5,7 @@ This install is an Ubuntu base i3 wm setup.
 ## Deploying dotfiles
 To deploy the dotfiles, cd into the dotfiles directory and use stow. 
 
-ADD BRIGHTNESSCTL
-
 ## Applications to install:
-
-### Using aptitude
 
 #### Alacritty Terminal
 
@@ -39,9 +35,10 @@ sudo apt-get install \
     ssh-askpass-gnome \
     jq \
     neovim \
+    fish \ 
     python3-neovim \
     fonts-powerline \
-        fonts-font-awesome \
+    fonts-font-awesome \
     tmux \
     pdfarranger \
     stow \
@@ -59,6 +56,7 @@ sudo apt-get install \
     recoll \
     ctags \
     ripgrep \
+    node 
 ```
 
 ### Using snaps
@@ -119,7 +117,7 @@ In Ubuntu 20.04 there's an apparmor problem. So It must be disabled for mako `su
 
 ### Recoll
 
-INSTRUCTIONS FOR RECOLL
+TODO: INSTRUCTIONS FOR RECOLL
 
 ### Brightess
 
