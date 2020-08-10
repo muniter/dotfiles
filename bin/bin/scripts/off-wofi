@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 import subprocess
 
+
 def wofi(options: list):
     '''Calls rofi in dmenu mode with the given selection options
-   
         It returns the selection
     '''
-    return subprocess.check_output(['wofi','-i', '-k', '/dev/null', '-d'],
+    return subprocess.check_output(
+            ['wofi', '-i', '-k', '/dev/null', '-d'],
             input='\n'.join(options), encoding='UTF-8').strip('\n')
 
 
