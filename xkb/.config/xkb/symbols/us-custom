@@ -1,0 +1,46 @@
+default partial alphanumeric_keys
+xkb_symbols "us_custom" {
+    include "us(altgr-intl)"
+    include "level3(caps_switch)"
+
+	name[Group1]= "English (Custom Keyboard)";
+
+    // NAVIGATION
+    // Vim like
+    key <AC06> {	[	  h,	H,		Left,    Left    ]	};
+    key <AC07> {	[	  j,	J,		Down,    Down    ]	};
+    key <AC08> {	[	  k,	K,		Up,      Up      ]	};
+    key <AC09> {	[	  l,	L,		Right,   Right   ]	};
+    // Page Wise
+    key <AB09> {	[    period,	greater,	Page_Down, Page_Down]	};
+    key <AB08> {	[     comma,	less,  Page_Up,    Page_Up]	};
+    // Find new mapings, r is used for refresh
+    //key <AD03> {	[	  e,	E,  XF86Back]	};
+    //key <AD04> {	[	  r,	R,  XF86Forward]	};
+
+    // Right Pinky Help
+    // BackSpace on level3
+    key <AC10> { [ semicolon,      colon,     BackSpace,           degree ] };
+    // Return on level3 Note: Removed because I was sending thing unwillingly
+    //key <AC11> {	[ apostrophe,	quotedbl,   Return	]	};
+
+    // Escape on level3
+    key <AD01> { [ q, Q, Escape, Escape ] };
+
+    // Caps Lock
+    //key <ESC>  { [Escape , Escape , Caps_Lock, Caps_Lock] };
+
+
+    // Control on HOLD, TODO: Not working right now since now is control with all the modified keys
+    key <SPCE> { [        space,        space,           Return,     Control_L ] };
+	key <RTRN> { [ Return ] };
+
+    // Shortcuts
+    // Todo, easier way to press F2 to edit cell in excel.
+    key <AB01> { [ z, Z, Undo, NoSymbol ] };
+    key <AB02> { [ x, X, XF86Cut, NoSymbol ] };
+    key <AB03> { [ c, C, XF86Copy, NoSymbol ] };
+    key <AB04> { [ v, V, XF86Paste, bracketleft ] };
+    key <AD04> { [ r, R, XF86Refresh, NoSymbol ] };
+    key <AC04> { [ f, F, XF86Search, XF86Search ] };
+};
