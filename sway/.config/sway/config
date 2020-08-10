@@ -18,21 +18,20 @@ set $netrefresh  sudo systemctl restart NetworkManager
 set $hibernate sudo systemctl suspend
 set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu wofi -i --show drun
-set $dropdown $term -t dropdown -e zsh
+set $dropdown $term -t dropdown -e zsh -c tmux
 
 # Screenshot of selection to stdout, saving to a file and into clipboard
 set $screenshot grim -g "$(slurp)" - | tee /tmp/"screenshot_$(date +%Y%m%d_%H%M%S)".png | wl-copy
+# TODO: Improve wf-recorder, there's a good script in sway/contrib
 set $record wf-recorder -a -g "$(slurp)" -f /tmp/"recording_$(date +%Y%m%d_%H%M%S)".mp4
 set $record-stop killall -s SIGINT wf-recorder
 
 ### Startup
 exec mako
 exec $scripts/track_prev_focus
-# TODO Use it to show focus only.
-#exec $scripts/fader
-
-### Output, Input and idle configuration in a host specific file
-# include $HOME/.config/sway/config.d/$(hostname).conf
+exec insync --qt-qpa-platform=xcb && insync show
+# Remap keys to work as modifiers
+exec sudo $scripts/remaps.py
 
 ### Key bindings
 
@@ -47,9 +46,6 @@ exec $scripts/track_prev_focus
 
     # Start your launcher
     bindsym $mod+d exec $menu
-    # Type emoji
-    bindsym $mod+Shift+u exec $scripts/dmenu-emoji.sh
-
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -69,11 +65,8 @@ bindsym $mod+Home exec pkill -USR1 redshift
 
 # Screenshot selection
 bindsym --release Shift+Print exec $screenshot
-bindsym --release $mod+Shift+Print exec $record, exec notify-send "Now recording"
+bindsym --release $mod+Shift+Print exec notify-send "Now recording", exec $record
 bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
-
-bindsym $mod+Shift+p exec paste
-
 
 #
 # Moving around:
@@ -85,7 +78,7 @@ bindsym $mod+Shift+p exec paste
     bindsym $mod+$right focus right
 
     # Move focus to previous window
-    bindsym $mod++g focus next
+    bindsym $mod+g focus next
     bindsym $mod+Shift+g focus prev
 
     # Or use $mod+[up|down|left|right]
@@ -107,9 +100,10 @@ bindsym $mod+Shift+p exec paste
     bindsym $mod+Shift+Right move right
 
 # Advanced Movement
+    bindsym $mod+b workspace back_and_forth
+    bindsym $alt+Tab workspace back_and_forth
     bindsym $mod+Tab workspace back_and_forth
     bindsym $mod+Escape exec $scripts/sway-list-windows
-    bindsym $alt+Tab [con_mark="_prev"] focus
 
 #Moving between workspaces
     bindsym $mod+period workspace next_on_output
@@ -201,9 +195,9 @@ bindsym $mod+Shift+p exec paste
     exec  $term -t nnn -e nnn
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # Hides any scratchpad marked with last, or shows the last one marked
-    bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
+    # bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
     bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add _last
-    bindsym $mod+n [con_mark="_last"] scratchpad show
+    bindsym $mod+n [con_mark="(_last|.)" floating] scratchpad show
     bindsym $mod+c [con_mark="^scratch_whatsapp$"] scratchpad show, move position center
 
     # To send any window I want to the scratchpad
@@ -260,6 +254,10 @@ mode "launch" {
         bindsym d exec discord, mode "default"
         bindsym $mod+d [class="^discord$"] scratchpad show, move position center, mode "default", mark --add _last
 
+        # Bitwarden
+        bindsym $mod+f [class="^Insync$"] scratchpad show, move position center, mode "default", mark --add _last
+        bindsym Shift+f exec insync show, mode "default"
+
         # Telegram
         bindsym t exec telegram-desktop, mode "default"
         bindsym $mod+t [app_id="telegram-desktop_telegram-desktop"] scratchpad show, move position center, mode "default", mark --add _last
@@ -290,7 +288,7 @@ mode "launch" {
 bindsym $mod+t mode "settings"
 mode "settings" {
         bindsym s exec $scripts/volume-control change-sink, mode "default"
-        bindsym p exec pavucontrol, mode "default"
+        bindsym d exec $scripts/wofi-options.py change-sink, mode "default"
         bindsym Escape mode "default"
 }
 
@@ -300,6 +298,30 @@ mode "layout" {
         bindsym h split vertical, focus left, move right, layout stacking, focus up, mode "default"
         bindsym l split vertical, focus right, move left, layout stacking, focus up, mode "default"
         bindsym Escape mode "default"
+}
+
+# Controling sway nagbar with keyboard
+# TODO: Fix doesn't work
+swaynag_command mode "nagbar"
+mode "nagbar" {
+  bindsym {
+    Ctrl+d    mode "default"
+
+    Ctrl+c    $nag --exit
+    q         $nag --exit
+    Escape    $nag --exit
+
+    Return    $nag --confirm
+
+    Tab       $nag --select prev
+    Shift+Tab $nag --select next
+
+    Left      $nag --select next
+    Right     $nag --select prev
+
+    Up        $nag --select next
+    Down      $nag --select prev
+  }
 }
 
 
@@ -329,6 +351,7 @@ for_window [app_id="telegram-desktop_telegram-desktop"] floating enable, resize 
 
 for_window [class="^Spotify$"] floating enable, resize set 2000 1200, move scratchpad, border pixel 1
 for_window [class="^Bitwarden$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
+for_window [class="^Insync$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
 
 
 ### Status Bar:
