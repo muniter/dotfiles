@@ -111,6 +111,7 @@ sudo usermod -aG docker muniter ```
 
 ### neovim
 
+I can install neovim from the [repositories](https://github.com/neovim/neovim), but I also like to use the nightly version.
 The plugin manager VimPlug must first be installed:
 
 ```bash
@@ -125,18 +126,19 @@ In Ubuntu 20.04 there's an apparmor problem. So It must be disabled for mako `su
 1. Telegram: There's a setting that tells it to use the native notifications (DBus)
 1. Firefox: When libnotify it's intalled firefox will use the native notifications.
 
-### Brightess
+### Sudo
 
-To control the brighness of the display we use `brightnessctl` which requires root access for obvious reasons. We define a rule in the sudoers file:
+The following additions are needed for the **remaps** script and **brightnessctl*, to run as sudo without asking for password.
 
 > It's very important to note that having a `. or ~` in the name will cause sudo to node include the file.
 
-**/etc/sudoers.d/sway**
+file: **/etc/sudoers.d/sway**
 
 ```bash
-# Run brightness commands as root whitout password
-muniter localhost=(root) NOPASSWD: /usr/bin/brightnessctl
-```
+# Run brightnessctl commands as root whitout password
+muniter localhost=(root) NOPASSWD: /usr/bin/brightnessctl /home/muniter/scripts/remaps.py
+# for user muniter, on host localhost run as root without password the commands brightnessctl and remaps.py
+```bash
 
 ### Remaps
 
@@ -146,7 +148,3 @@ The remap script to have Tab and Backslash as super when hold, and normal action
 
 **/etc/sudoers.d/sway**
 
-```bash
-# Run brightness commands as root whitout password
-muniter localhost=(root) NOPASSWD: /usr/bin/brightnessctl /home/muniter/scripts/remaps.py
-```
