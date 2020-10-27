@@ -71,11 +71,16 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git colorize cp dirhistory docker-compose docker fzf history pip python ripgrep ssh-agent ufw nmap django)
+plugins=(git colorize cp debian dirhistory docker-compose docker history pip python ripgrep ssh-agent ufw nmap django vi-mode fzf)
 
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
+#
+# Some private environment variables
+source ~/.env
+
+# My complete functions
+fpath+=(~/.config/zsh/completion)
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -101,9 +106,17 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# Vim mode editing
-bindkey -v
 
 # fzf installation directory path
 export FZF_BASE=/usr/bin/fzf
 source /usr/share/doc/fzf/examples/key-bindings.zsh
+
+# ssh identities
+zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa_pub id_rsa_private
+
+# Source oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+
+# Vim mode editing
+#bindkey -v
+if [ -e /home/muniter/.nix-profile/etc/profile.d/nix.sh ]; then . /home/muniter/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

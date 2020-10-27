@@ -15,7 +15,7 @@ Plug 'tpope/vim-repeat'                         "Repeat plugins custom mappings 
 Plug 'tpope/vim-scriptease'                     "Utilities for diagnosing viewing messages echoed in nvim
 Plug 'tpope/vim-commentary'                     "Comment every language
 Plug 'ThePrimeagen/vim-be-good', {'do': './install.sh'} "This game will make you go so fast, you'll need some coconut oil.
-Plug 'danro/rename.vim'                         "Rename files with vim
+Plug 'tpope/vim-eunuch'                     "Unix utilities rename, move, sudowrite, etc
 Plug 'christoomey/vim-tmux-navigator'           "Easy pane switching with tmux
 Plug 'itchyny/lightline.vim'
 " Highlits Colors RED, BLUE #040404
@@ -24,6 +24,9 @@ Plug 'vim-scripts/nginx.vim'                    "Nginx filetype forma t
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } } "firefox vim
 Plug 'junegunn/fzf'                             "fuzzy search
 Plug 'junegunn/fzf.vim', { 'do': { -> fzf#install() } } "fuzze search functions e.g Files, Buffers
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/telescope.nvim'
 Plug 'junegunn/goyo.vim'
 Plug 'jamestthompson3/nvim-remote-containers'
 Plug 'airblade/vim-gitgutter'                   " Signs in the side for changes/additions/deletions
@@ -43,7 +46,7 @@ Plug 'majutsushi/tagbar'
 " }}}
 " Language Specific {{{
 " Markdown
-"Plug 'plasticboy/vim-markdown'
+" Plug 'plasticboy/vim-markdown'
 "Plug 'gabrielelana/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } "markdown preview
 " Scramble arguments around <leader>ar and <leader>al
@@ -61,6 +64,7 @@ Plug 'nvim-lua/diagnostic-nvim'
 "}}}
 "Snippets {{{
 Plug 'honza/vim-snippets'                       "Some useful snippets
+"Plug 'norcalli/snippets.nvim'                        "Norcalli snippets
 Plug 'SirVer/ultisnips'
 "}}}
 " Future User Reference {{{
@@ -72,6 +76,9 @@ Plug 'rhysd/committia.vim'      " Sweet message committer
 Plug 'rhysd/git-messenger.vim'  " Floating windows are awesome :)
 " HTML expanding abreviation
 "Plug 'mattn/emmet-vim'
+" }}}
+" Navigation {{{
+Plug 'justinmk/vim-sneak'
 " }}}
 " Games {{{
 Plug 'norcalli/typeracer.nvim'
@@ -86,6 +93,8 @@ Plug 'norcalli/typeracer.nvim'
 " TODO: I need the nix package manager.
 " Zettelkasten
 Plug 'ihsanturk/neuron.vim'
+" Calendar
+Plug 'itchyny/calendar.vim'
 " Org mode
 Plug 'dhruvasagar/vim-dotoo'
 " One line expressions to multi line
@@ -110,7 +119,7 @@ set showcmd                 "show command in bottom bar
 set cursorline              "highlight current line
 set wildmenu                "visual autocomplete for commands
 set wildchar=<Tab>          "Character to trigger command line expansion > completion
-set wildmode=longest,full   "Complete longest common string, then each full match
+set wildmode=longest,full  "Complete longest common string, then each full match
 set wildoptions+=pum        "Command line completion using PopUpMenu pum
 set winblend=50             "Pseudo-transparent pum window
 set completeopt=menuone,noinsert,noselect
@@ -123,7 +132,7 @@ set incsearch               "search as characters are entered
 set hlsearch                "highlight matches
 set ignorecase              "ignore case when searching
 set smartcase               "dont ignore case if a capital letter present
-" set path+=**
+set path+=**
 set wildignore=*.pyc,*pycache*,*~
 set wildignore+=__pycache__
 set tabstop=4               "number of visual space per tab
@@ -141,8 +150,12 @@ set splitright              " Prefer windows splitting to the right
 set splitbelow              " Prefer windows splitting to the bottom
 set scrolloff=10            " Make it so there are always ten lines below my cursor
 set termguicolors           " Enables 24-bit RGB color in the |TUI|.
+
 " Highlight yank text
 lua vim.cmd[[ au TextYankPost * silen! lua require'vim.highlight'.on_yank()]]
+
+" Sintax highlithing for Lua inside vimscript files.
+let g:vimsyn_embed = 1
 
 " Folding
 set foldmethod=marker
@@ -170,10 +183,29 @@ set linebreak
 "TODO: Dont close open folds when writting.
 "TODO: Fix issues when pasting having ^M
 ""Conceal
-"augroup Bible
-"    autocmd BufReadPost reina_valera_1960.md :syntax match Concealed '^\d*\.\I\{3\}\.\d*\.' conceal
-"    autocmd BufReadPost reina_valera_1960.md :set concealcursor=n
-"augroup END
+augroup Bible
+    autocmd!
+    autocmd BufReadPost reina_valera_1960.md :syntax match Concealed '^\d*\..\{3\}\.\d*\.' conceal
+    autocmd BufReadPost reina_valera_1960.md :set conceallevel=2
+    autocmd BufReadPost reina_valera_1960.md :set concealcursor=nvi
+    " autocmd BufReadPost reina_valera_1960.md setlocal spell spelllang=es
+    autocmd BufReadPost reina_valera_1960.md iabbrev cj Cristo Jesús
+    autocmd BufReadPost reina_valera_1960.md iabbrev rr Rey de Reyes
+    autocmd BufReadPost reina_valera_1960.md iabbrev sj Señor Jesucristo
+    autocmd BufReadPost reina_valera_1960.md iabbrev sn Señor
+    autocmd BufReadPost reina_valera_1960.md iabbrev ss Espíritu Santo
+    autocmd BufReadPost reina_valera_1960.md iabbrev hd hijo de Dios
+    autocmd BufReadPost reina_valera_1960.md iabbrev dd Dios
+    autocmd BufReadPost reina_valera_1960.md iabbrev jh Jehová
+    autocmd BufReadPost reina_valera_1960.md iabbrev ig Iglesia
+    autocmd BufReadPost reina_valera_1960.md iabbrev hml Hermana María Luisa
+    autocmd BufReadPost reina_valera_1960.md setlocal scrolloff=0
+    autocmd BufReadPost reina_valera_1960.md nnoremap <buffer><silent>fd :!xdg-open "https://dle.rae.es/<cword>?m=form"<CR>
+    "ls
+augroup END
+" To recover folds when writing and entering
+" au BufWinLeave * mkview
+" au BufWinEnter * silent loadview
 
 "}}}
 
@@ -181,6 +213,8 @@ set linebreak
 " For long, wrapped lines
 nnoremap <silent><expr>j (v:count > 0 ? 'j' : 'gj')
 nnoremap <silent><expr>k (v:count > 0 ? 'k' : 'gk')
+nnoremap <silent><leader>j j
+nnoremap <silent><leader>k k
 
 " For moving quickly up and down,
 " Goes to the first line above/below that isn't whitespace
@@ -191,6 +225,7 @@ nnoremap gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\
 
 "REMAPS
 tnoremap JK <C-\><C-N>
+tnoremap <s-esc> <C-\><C-N>
 tnoremap <m-esc> <C-\><C-N>
 tnoremap <C-J> <C-\><C-N><C-W><C-J>
 tnoremap <C-K> <C-\><C-N><C-W><C-K>
@@ -223,15 +258,29 @@ nnoremap <A-.> <C-W>5>
 nnoremap <A-t> <C-W>5+
 nnoremap <A-s> <C-W>5-
 
+" Modify behavior
+nnoremap <c-w>o :tab split<CR>
+nnoremap <silent><expr>j (v:count > 0 ? 'j' : 'gj')
+nnoremap <A-s> <C-W>5-
+
 " Easier Mark Usage
 nnoremap ' `
 
 " copy selection too gui-clipboard
-xnoremap Y "+y
+" xnoremap Y "+y
 
+" Make Y consistent with C and D.
+nnoremap Y y$
+
+"Quick opening command line mode
+nnoremap q; q:
 "Quick editing vimrc
 nnoremap <leader>vr  :sp $MYVIMRC<cr>
 nnoremap <leader>so :source $MYVIMRC<cr>
+
+" Quick Spell Configuration
+nnoremap <leader>spe  :setlocal spell spelllang=en<CR>
+nnoremap <leader>sps  :setlocal spell spelllang=es<CR>
 
 "Quick find
 inoremap jk <esc> 
@@ -289,8 +338,8 @@ nnoremap <l :lolder<CR>
 nnoremap >l :lnewer<CR>
 
 " Inserting a New line
-map <Leader>o o<Esc>k
-map <Leader>O O<Esc>k
+nnoremap <Leader>o o<Esc>k
+nnoremap <Leader>O O<Esc>j
 "Split the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
 "Paste last yanked text with P
@@ -300,6 +349,7 @@ nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
 
 "Change local window directory to current file directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
+" nnoremap wd :pwd<cr>
 " Echo current file location
 command! -nargs=0 Pfd :echo(expand('%:p'))
 
@@ -307,59 +357,37 @@ command! -nargs=0 Pfd :echo(expand('%:p'))
 nnoremap <leader>al :SidewaysLeft<cr>
 nnoremap <leader>ar :SidewaysRight<cr>
 
+"Session Management
+nnoremap <leader>zs :SSave<CR>
+nnoremap <leader>zl :SLoad
+
 " Rg in files
 " Clears hlsearch after doing a search, otherwise just does normal <CR> stuff
 nnoremap <expr> <CR> {-> v:hlsearch ? ":nohl\<CR>" : "\<CR>"}()
 " mark position before search
 nnoremap / ms/
 
-" FZF Usage with Vim
-"nnoremap <leader><leader>f :call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(expand("<cword>")), 1, 0)<CR>
-"nnoremap <leader><leader>F :call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(expand("<cWORD>")), 1, 0)<CR>
-"
-"" Finding Files
-"nnoremap <space>ff      <cmd>FzfPreviewDirectoryFiles<CR>
-"nnoremap <space>fp      <cmd>FzfPreviewProjectFiles<CR>
-"nnoremap <space>fcf      <cmd>call Fzf_on_current_file_directory()<CR>
-"" Buffers
-"nnoremap <space>if      <cmd>FzfPreviewBuffers<CR>
-"" Git
-"nnoremap <space>gs      <cmd>FzfPreviewGitStatus<CR>
-"" Grepping
-"nnoremap <space>gg      :FzfPreviewProjectGrep 
-"nnoremap <space>gcg      <cmd>call Fzf_grep_on_current_file_directory()<CR>
-"" Finding World
-"nnoremap <space>gw      <cmd>call execute(':FzfPreviewProjectGrep ' . expand("<cword>"))<CR>
-"" Fzf Preview on dotfiles
-"nnoremap <space>fdo      <cmd>FzfPreviewDirectoryFiles ~/dotfiles<CR>
-"" Netrw toggle
-"nnoremap <silent><leader>ft :Lexplore<CR>
-" Undotree toggle
-nnoremap <silent><leader>ut :UndotreeToggle<CR>
-let g:undotree_SetFocusWhenToggle = 1
-"" Shrug ¯\_(ツ)_/¯
-"inoremap ,shrug ¯\_(ツ)_/¯
-"
-"function! s:fzf_open_file_at_line(e) abort
-"  "Get the <path>:<line> tuple; fetch.vim plugin will handle the rest.
-"  execute 'edit' fnameescape(matchstr(a:e, '\v([^:]{-}:\d+)'))
-"endfunction
-"function! s:fzf_search_fulltext() abort
-"  call fzf#run({'source':'git grep --line-number --color=never -v "^[[:space:]]*$"',
-"        \ 'sink':function('<sid>fzf_open_file_at_line')})
-"endfunction
-
+" Telescope 
+nnoremap <M-p> <cmd>lua require'telescope.builtin'.live_grep()<CR>
+nnoremap <M-/> <cmd>lua require'telescope.builtin'.find_files{}<CR>
+nnoremap <M-;> <cmd>lua require'telescope.builtin'.buffers{}<CR>
 " Search current-working-directory _or_ current-file-directory
 "nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>Files<CR>'
-nnoremap <silent><expr> <M-/> v:count ? ':<C-U>Rg<CR> ' : ':<C-U>Files<CR>'
-nnoremap <silent><expr> <M-?> v:count ? 'mS:<C-U>Lines<CR>' : ':<C-U>Buffers<CR>'
-" nnoremap <silent>gN :Files ~/notes<CR>
+" nnoremap <silent><expr> <M-/> v:count ? ':<C-U>Rg<CR> ' : ':<C-U>Files<CR>'
+" nnoremap <silent><expr> <M-?> v:count ? 'mS:<C-U>Lines<CR>' : ':<C-U>Buffers<CR>'
+nnoremap <silent><leader>gi :Files ~/notes/idmji<CR>
+nnoremap <silent><leader>gn :Files ~/notes<CR>
+nnoremap <silent><leader>gj :Files ~/notes/<CR>journal 
+nnoremap <silent><leader>gc :Files ~/.config<CR>
 " Search MRU files
 nnoremap <silent>       <M-\> :History<cr>
 nmap                    g/    <M-/>
 
-nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
-nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
+" nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
+" nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
+
+nnoremap <M-f> :Goyo<CR>
+
 "}}}
 
 "{{{ Insert Mode and Helpers
@@ -367,9 +395,9 @@ nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
 inoremap <M-l> <Right>
 inoremap <M-h> <Left>
 " Abbreviations
-iabbrev c] [ ]
-iabbrev <expr> dts] strftime("%Y-%m-%d")
-iabbrev <expr> dtt] strftime("%Y-%m-%d %H:%M:%S")
+iabbrev c] - [ ]
+iabbrev <expr> dts] strftime("%Y-%m-%d")                " Date time small
+iabbrev <expr> dtt] strftime("%Y-%m-%d %H:%M:%S")       " Date time time
 let g:switch_mapping = "-"
 let g:switch_custom_definitions = [['[ ]', '[X]']]
 "}}}
@@ -389,15 +417,34 @@ function! Fzf_grep_on_current_file_directory()
     execute (':cd' . l:path)
 endfunction
 
+function! s:list_buffers()
+  redir => list
+  silent ls
+  redir END
+  return split(list, "\n")
+endfunction
+
+function! s:delete_buffers(lines)
+  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
+endfunction
+
+command! BD call fzf#run(fzf#wrap({
+  \ 'source': s:list_buffers(),
+  \ 'sink*': { lines -> s:delete_buffers(lines) },
+  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
+\ }))
+
 " }}}
 
 " Plugins Configuration {{{
+lua require('init')
 " Corlscheme
 lua require('colorbuddy').colorscheme('gruvbuddy')
-" Colorizer
-lua require'colorizer'.setup()
 
 let g:fzf_preview_command = 'tail {-1}'
+
+" UndoTree
+let g:undotree_SetFocusWhenToggle = 1
 
 "Firenvim
 let g:firenvim_config = { 
@@ -439,8 +486,14 @@ set hidden
 " }}}
 
 " LSP Configuration {{{
-lua require'nvim_lsp'.pyls.setup({enable=true, on_attach=require'completion'.on_attach, plugins={pycodestyle={ignore={"W191","W1"}, } } })
-lua require'nvim_lsp'.tsserver.setup({enable=true, on_attach=require'completion'.on_attach})
+" lua require'nvim_lsp'.pyls.setup({enable=true, on_attach=require'completion'.on_attach, plugins={pycodestyle={ignore={"W191","W1"}, } } })
+" lua require'nvim_lsp'.tsserver.setup({enable=true, on_attach=require'completion'.on_attach})
+" lua require'nvim_lsp'.sumneko_lua.setup({on_attach=require'completion'.on_attach})
+" lua require'nvim_lsp'.jsonls.setup{({on_attach=require'completion'.on_attach})}
+" lua require'nvim_lsp'.yamlls.setup{({on_attach=require'completion'.on_attach})}
+" lua require'nvim_lsp'.html.setup{({on_attach=require'completion'.on_attach})}
+" lua require'nvim_lsp'.cssls.setup{({on_attach=require'completion'.on_attach})}
+" lua require'nvim_lsp'.dockerls.setup{({on_attach=require'completion'.on_attach})}
 
 "Allow snippets
 "let g:UltiSnipsExpandTrigger = "\<tab>"
@@ -448,7 +501,7 @@ lua require'nvim_lsp'.tsserver.setup({enable=true, on_attach=require'completion'
 "let g:UltiSnipsJumpBackwardTrigger = "\<c-k>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips", "mysnippets"]
 let g:completion_enable_snippet = 'UltiSnips'
-let g:completion_confirm_key = "\<c-k>"
+let g:completion_confirm_key = "\<c-y>"
 " Complete pair [({ when method confirmed
 let g:completion_enable_auto_paren = 1
 " Change source when current options are empty
@@ -457,6 +510,11 @@ let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 " Character that will trigger completion
 let g:completion_trigger_character = ['.']
 " Completion chain, can change between and emualte vim modes when there's no
+" let g:completion_chain_complete_list = {
+"             \'default' : [
+"             \    {'complete_items': ['lsp', 'snippet']}
+"             \]
+"             \}
 " matches for LSP or SNIPPET,  <C-X><C-P> will pop up.
 let g:completion_chain_complete_list = {
             \'default' : [
@@ -469,8 +527,8 @@ let g:completion_chain_complete_list = {
             \]
             \}
 " TODO: Find good mappings for this
-imap  <c-j> <Plug>(completion_next_source)
-imap  <c-k> <Plug>(completion_prev_source)
+inoremap  <c-0> <Plug>(completion_next_source)
+inoremap  <c-9> <Plug>(completion_prev_source)
 " imap <expr> <c-j>  pumvisible() ? <Plug>(completion_next_source)":  ""
 " imap <expr> <c-k>  pumvisible() ? <Plug>(completion_prev_source)":  ""
 "Check if LSP is working on the current buffer
@@ -478,10 +536,11 @@ nnoremap <space>lsp <cmd>lua print(vim.inspect(vim.lsp.buf_get_clients()))<CR>
 nnoremap <space>lspr <cmd>lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR>
 
 "Binding to use with lsp
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gD    <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
@@ -493,6 +552,10 @@ nnoremap <leader>dn     <cmd>lua vim.lsp.structures.Diagnostic.buf_move_next_dia
 nnoremap <leader>dp     <cmd>lua vim.lsp.structures.Diagnostic.buf_move_prev_diagnostic()<CR>
 "Insert mode
 inoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+" Snippets
+"lua require'snippets'.use_suggested_mappings()
+"inoremap <c-k> <cmd>lua return require'snippets'.expand_or_advance(1)<CR>
+"inoremap <c-j> <cmd>lua return require'snippets'.advance_snippet(-1)<CR>
 " }}}
 
 " Learning and Practicing {{{

@@ -3,6 +3,7 @@
 import atexit
 import evdev
 import os
+import time
 from time import sleep
 
 # Check if running as roout
@@ -19,12 +20,20 @@ REMAP_TABLE = {
                                          evdev.ecodes.KEY_BACKSLASH],
             evdev.ecodes.KEY_CAPSLOCK: [evdev.ecodes.KEY_RIGHTALT,
                                         evdev.ecodes.KEY_ESC],
+            # evdev.ecodes.KEY_A: [evdev.ecodes.KEY_LEFTCTRL,
+            #                      evdev.ecodes.KEY_A],
+            # evdev.ecodes.KEY_LEFTSHIFT: [evdev.ecodes.KEY_LEFTSHIFT,
+            #                              evdev.ecodes.KEY_BACKSPACE],
         }
 
-
 # Select the keyboard
-NAME = 'MosArt USB Keyboard'
 devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
+devices_names = list(map(lambda d: d.name, devices))
+
+# Names
+WIRED = 'MosArt USB Keyboard'
+WIRELESS = 'MosArt USB 2.4G Keyboard'
+NAME = WIRED if WIRED in devices_names else WIRELESS
 kbd = [d for d in devices if d.name == NAME and len(d._rawcapabilities) > 4][0]
 
 # Make the virtual Kb name similar.
@@ -38,10 +47,16 @@ kbd.grab()
 # Last press key wil be stored here
 last_event = ''
 
+# TODO: Fix the logic, I shoul not send events for the
+# remap unless I haven't received a 2 "Hold" event.
+# TODO: last_event checking fails when I press a key and the up event
+# hasn't triggered, Happens a lot when using tab, because of quick typing
+# rather save the last type of key event received for that remapping.
 # Create a new keyboard mimicking the original one.
 with evdev.UInput.from_device(kbd, name=virtual_kdb_name) as ui:
     # Read events from original keyboard.
     for ev in kbd.read_loop():
+        print("Active keycodes", kbd.active_keys(True))
         # Process only key events.
         if ev.type == evdev.ecodes.EV_KEY:
             # When pause is pressed break the loop

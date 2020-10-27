@@ -20,6 +20,7 @@ set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu wofi -i --show drun
 set $dropdown $term -t dropdown -e zsh -c tmux
 
+
 # Screenshot of selection to stdout, saving to a file and into clipboard
 set $screenshot grim -g "$(slurp)" - | tee /tmp/"screenshot_$(date +%Y%m%d_%H%M%S)".png | wl-copy
 # TODO: Improve wf-recorder, there's a good script in sway/contrib
@@ -29,7 +30,7 @@ set $record-stop killall -s SIGINT wf-recorder
 ### Startup
 exec mako
 exec $scripts/track_prev_focus
-exec insync --qt-qpa-platform=xcb && insync show
+exec insync start --qt-qpa-platform=xcb && insync show
 # Remap keys to work as modifiers
 exec sudo $scripts/remaps.py
 
@@ -56,6 +57,7 @@ exec sudo $scripts/remaps.py
 
     # # Little script that show suspend, lock, exit, reboot
     bindsym $mod+Shift+e exec $scripts/off-wofi
+    bindsym $mod+z exec $scripts/off-wofi
 
 #
 # Added functionality:
@@ -99,17 +101,18 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
 
-# Advanced Movement
+    # Advanced Movement
     bindsym $mod+b workspace back_and_forth
+    bindsym $mod+e workspace back_and_forth
     bindsym $alt+Tab workspace back_and_forth
     bindsym $mod+Tab workspace back_and_forth
     bindsym $mod+Escape exec $scripts/sway-list-windows
 
-#Moving between workspaces
+    #Moving between workspaces
     bindsym $mod+period workspace next_on_output
     bindsym $mod+comma workspace prev_on_output
 
-#Moving window throught workspaces
+    #Moving window throught workspaces
     bindsym $mod+Control+$alt+h move container to workspace prev_on_output, workspace prev_on_output
     bindsym $mod+Control+$alt+l move container to workspace next_on_output, workspace next_on_output
 
@@ -150,12 +153,10 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
 #
 # Layout stuff:
 #
-    # You can "split" the current object of your focus with
-    bindsym $mod+s split toggle
 
     # Switch the current container between different layout styles
-    bindsym $mod+e layout stacking
-    bindsym $mod+w layout default 
+    # bindsym $mod+e layout stacking
+    # bindsym $mod+w layout default 
 
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
@@ -176,8 +177,8 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     # inner+outer = edge gap
     smart_borders on
     smart_gaps on
-    gaps inner 8                                        
-    gaps outer 2                                        
+    gaps inner 8
+    gaps outer 2
     bindsym $mod+m gaps inner current plus 5
     bindsym $mod+Shift+m gaps inner current minus 5
 
@@ -195,7 +196,7 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     exec  $term -t nnn -e nnn
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # Hides any scratchpad marked with last, or shows the last one marked
-    # bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
+    bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
     bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add _last
     bindsym $mod+n [con_mark="(_last|.)" floating] scratchpad show
     bindsym $mod+c [con_mark="^scratch_whatsapp$"] scratchpad show, move position center
@@ -207,6 +208,85 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
 #
 # Modes
 #
+
+# Launch mode
+bindsym $mod+i mode "launch"
+mode "launch" {
+        bindsym b exec $browser, mode "default"
+        bindsym f exec $file_manager, mode "default"
+
+        # Element
+        bindsym e exec element-desktop, mode "default"
+        bindsym $mod+e [class="^Element$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Spotify
+        bindsym m exec spotify, mode "default"
+        bindsym $mod+m [class="^Spotify$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Rhythmbox
+        bindsym Shift+m exec rhythmbox, mode "default"
+        bindsym $mod+Shift+m [app_id="^rhythmbox$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Discord
+        bindsym d exec discord, mode "default"
+        bindsym $mod+d [class="^discord$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Bitwarden
+        bindsym $mod+f [class="^Insync$"] scratchpad show, move position center, mode "default", mark --add _last
+        bindsym Shift+f exec insync show, mode "default"
+
+        # Telegram
+        bindsym t exec telegram-desktop, mode "default"
+        bindsym $mod+t [app_id="telegram-desktop_telegram-desktop"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Whatsapp
+        bindsym c exec whatsdesk, mode "default"
+        # bindsym c exec chromium --app="https://web.whatsapp.com/", mode "default"
+        bindsym $mod+Shift+c mark scratch_whatsapp, mode "default"
+
+        # Home Assistant
+        bindsym h exec chromium --app="http://ha.loc", mode "default"
+        bindsym $mod+h [con_mark="^scratch_ha_dashboard$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Bitwarden
+        bindsym p exec bitwarden, mode "default"
+        bindsym $mod+p [class="^Bitwarden$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Notes Scratchpad
+        bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
+        bindsym i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
+        bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
+
+        # Bring back dropdown in case closed.
+        bindsym Shift+d exec  $dropdown, mode "default"
+        bindsym Shift+n exec  $term -t nnn -e nnn, mode "default"
+
+        # Neovim
+        bindsym n exec gnvim, mode "default"
+
+        # Getting out of the mode
+        bindsym escape mode "default"
+        bindsym return mode "default"
+}
+
+
+# Settings mode
+bindsym $mod+t mode "settings"
+mode "settings" {
+        # Off wofi
+        bindsym e exec $scripts/off-wofi, mode "default"
+        bindsym $mod+e exec $scripts/off-wofi, mode "default"
+
+        # Useful goodies
+        bindsym $mod+t exec $scripts/wofi-options.py, mode "default"
+
+        # Sound
+        bindsym s exec $scripts/volume-control change-sink, mode "default"
+        bindsym d exec $scripts/wofi-options.py change-sink, mode "default"
+        bindsym m exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+        bindsym l exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+        bindsym Escape mode "default"
+}
 
 # resize containers 
 bindsym $mod+r mode "resize"
@@ -226,78 +306,65 @@ mode "resize" {
     bindsym Shift+$down resize grow height 10px
     bindsym Shift+$up resize shrink height 10px
 
-    # Change layout mode
-    bindsym e layout toggle split, mode "default"
-    bindsym s layout stacking, mode "default"
-    bindsym t layout tabbed, mode "default"
-
     # Return to default mode
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
 
-# Launch mode
-bindsym $mod+i mode "launch"
-mode "launch" {
-        bindsym b exec $browser, mode "default"
-        bindsym f exec $file_manager, mode "default"
-
-        # Gitter
-        bindsym g exec gitter, mode "default"
-        bindsym $mod+g [class="^Gitter$"] scratchpad show, move position center, mode "default", mark --add _last
-
-        # Spotify
-        bindsym m exec spotify, mode "default"
-        bindsym $mod+m [class="^Spotify$"] scratchpad show, move position center, mode "default", mark --add _last
-
-        # Discord
-        bindsym d exec discord, mode "default"
-        bindsym $mod+d [class="^discord$"] scratchpad show, move position center, mode "default", mark --add _last
-
-        # Bitwarden
-        bindsym $mod+f [class="^Insync$"] scratchpad show, move position center, mode "default", mark --add _last
-        bindsym Shift+f exec insync show, mode "default"
-
-        # Telegram
-        bindsym t exec telegram-desktop, mode "default"
-        bindsym $mod+t [app_id="telegram-desktop_telegram-desktop"] scratchpad show, move position center, mode "default", mark --add _last
-
-        # Whatsapp
-        bindsym c exec $browser --ssb="https://web.whatsapp.com/", mode "default"
-        bindsym $mod+Shift+c mark scratch_whatsapp, mode "default"
-
-        # Bitwarden
-        bindsym p exec bitwarden, mode "default"
-        bindsym $mod+p [class="^Bitwarden$"] scratchpad show, move position center, mode "default", mark --add _last
-
-        # Notes Scratchpad
-        bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
-        bindsym i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
-        bindsym $mod+i [con_mark="^notes_scratch$"] scratchpad show, mode "default", mark --add _last
-
-
-        bindsym Escape mode "default"
-
-        # Bring back dropdown in case closed.
-        bindsym Shift+d exec  $dropdown, mode "default"
-        bindsym Shift+n exec  $term -t nnn -e nnn, mode "default"
-}
-
-
 # Settings mode
-bindsym $mod+t mode "settings"
-mode "settings" {
-        bindsym s exec $scripts/volume-control change-sink, mode "default"
-        bindsym d exec $scripts/wofi-options.py change-sink, mode "default"
-        bindsym Escape mode "default"
-}
-
-# Settings mode
-bindsym $mod+Shift+s mode "layout"
+bindsym $mod+w mode "layout"
 mode "layout" {
-        bindsym h split vertical, focus left, move right, layout stacking, focus up, mode "default"
-        bindsym l split vertical, focus right, move left, layout stacking, focus up, mode "default"
+        # Resize Mode
+        bindsym $mod+r mode "resize"
+
+        # Quitting
+        bindsym q kill, mode "default"
+
+        # Quick Stacking
+        bindsym $left split vertical, focus left, move right, layout stacking, focus up, mode "default"
+        bindsym $right split vertical, focus right, move left, layout stacking, focus up, mode "default"
+
+        # Quick one over the other
+        bindsym $down split vertical, focus left, move right, focus down, mode "default"
+        bindsym $up split vertical, focus right, move left, focus up, mode "default"
+
+        # Properties
+        bindsym Shift+s sticky toggle, mode "default"
+        bindsym f floating toggle, mode "default"
+        bindsym space floating toggle, mode "default"
+
+        # Split direction
+        bindsym v split horizontal, mode "default"
+        bindsym s split vertical, mode "default"
+
+        # Change layout mode
+        bindsym $mod+d layout toggle split, mode "default"
+        bindsym $mod+s layout stacking, mode "default"
+        bindsym $mod+t layout tabbed, mode "default"
+
+        # Resize
+        bindsym $mod+q+$right resize grow width 20px
+        bindsym $mod+q+$left resize shrink width 20px
+        bindsym $mod+q+$down resize grow height 20px
+        bindsym $mod+q+$up resize shrink height 20px
+
+        # Movement
+        bindsym $mod+w+$left move position 0px 0px
+        bindsym $mod+w+$down move down 30 ppt
+        bindsym $mod+w+$up move up 30 ppt
+        bindsym $mod+w+$right move right 30 ppt
+
+        #todo: moving floating windows.
+        bindsym escape mode "default"
+        bindsym return mode "default"
+}
+
+# Debug mode
+bindsym $mod+End mode "debug"
+mode "debug" {
+        bindsym p exec echo $PATH && id, mode "default"
         bindsym Escape mode "default"
+        bindsym Return mode "default"
 }
 
 # Controling sway nagbar with keyboard
@@ -328,15 +395,15 @@ mode "nagbar" {
 ### Layouts stuff
 #
 # Global Properties
-# titlebar_border_thickness 1
+titlebar_border_thickness 1
 for_window [title=".*"] border pixel 5
 show_marks yes
-bindsym $mod+Shift+comma border toggle
+bindsym $mod+Shift+Insert border toggle
 bindsym $mod+Insert title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
-bindsym $mod+y sticky toggle
 
 # Layout
-for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-power-.*)"] floating enable, resize set 925 600
+for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-calculator|gnome-power-.*)"] floating enable, resize set 925 600
+for_window [title="^(Advanced search|Query.*)$" app_id="^recoll$"] floating enable, resize set 925 600
 
 # Opacity
 for_window [app_id="^Alacritty$"] opacity set 0.9
@@ -344,10 +411,11 @@ for_window [title="dropdown"] opacity set 0.84
 for_window [con_mark="^notes_scratch$"] opacity set 0.80
 
 # scrachpads
-for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1200 900, move scratchpad, border pixel 5
-for_window [con_mark="^scratch_whatsapp$"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
-for_window [class="^(Gitter|discord)$"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
-for_window [app_id="telegram-desktop_telegram-desktop"] floating enable, resize set 1300 900, move scratchpad, border pixel 5
+for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
+for_window [class="^whatsdesk$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_whatsapp
+for_window [instance="^ha.loc$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_ha_dashboard
+for_window [class="^(Gitter|Element|discord)$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
+for_window [app_id="(telegram-desktop_telegram-desktop|rhythmbox)"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
 
 for_window [class="^Spotify$"] floating enable, resize set 2000 1200, move scratchpad, border pixel 1
 for_window [class="^Bitwarden$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
@@ -365,14 +433,14 @@ exec_always $HOME/.config/waybar/waybar.sh
 # F2 is used for reloading
 #bindsym $mod+F3
 #bindsym $mod+F4
-#bindsym $mod+F5	
-#bindsym $mod+F6		
+#bindsym $mod+F5
+#bindsym $mod+F6
 bindsym $mod+F7 exec wdisplays
 #bindsym $mod+F8
-#bindsym $mod+F9		
-#bindsym $mod+F10	
-#bindsym $mod+F11	
-#bindsym $mod+F12	
+#bindsym $mod+F9
+#bindsym $mod+F10
+#bindsym $mod+F11
+#bindsym $mod+F12
 
 ### Include another config file named hostname.conf
 include $HOME/.config/sway/conf.d/$(hostname).conf

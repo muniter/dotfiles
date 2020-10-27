@@ -13,12 +13,14 @@ def wofi(options: list):
 
 if __name__ == "__main__":
     options = {
-            'lock': 'swaylock',
-            'suspend': 'systemctl suspend',
-            'suspend & office': 'curl -d "" homeassistant.loc:8123/api/webhook/office_nfc09945612',
-            'exit sway': 'swaymsg exit',
-            'reboot': 'reboot',
-            'shutdown': 'shutdown -h now',
+            'Lock': 'swaylock',
+            'Suspend': 'systemctl suspend',
+            'Suspend & Office': 'curl -d "" homeassistant.loc:8123/api/webhook/office_09945612',
+            'Toggle Office Light': 'curl -d "" homeassistant.loc:8123/api/webhook/office_light_09945612',
+            'Toggle Office Fan': 'curl -d "" homeassistant.loc:8123/api/webhook/office_fan_09945612',
+            'Exit sway': 'swaymsg exit',
+            'Reboot': 'reboot',
+            'Shutdown': 'shutdown -h now',
             }
 
     result = wofi(options.keys())

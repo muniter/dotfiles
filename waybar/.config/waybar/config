@@ -21,7 +21,7 @@
         "format": "mode: {}"
     },
     "clock": {
-		"format": "{:%Y-%m-%d | %H:%M}",
+		"format": "{:%Y-%m-%d | %H:%M:%S}",
         "format-alt": "{:%Y-%m-%d}"
     },
     "battery#bat0": {

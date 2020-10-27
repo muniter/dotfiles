@@ -4,11 +4,11 @@ This install is an Ubuntu base sway wm setup.
 
 ## TODO:
 
-[ ] How to deploy snapper configuration.
-[ ] Documentation on remap script.
-[x] Document how to setup sudoers file to run apps as root, whitout password.
-[ ] Instruction for installing and setting up recoll.
-[ ] Reformat this file better.
+- [ ] How to deploy snapper configuration.
+- [ ] Documentation on remap script.
+- [x] Document how to setup sudoers file to run apps as root, whitout password.
+- [ ] Instruction for installing and setting up recoll.
+- [ ] Reformat this file better.
 
 ## Deploying dotfiles
 To deploy the dotfiles, cd into the dotfiles directory and use stow. 
