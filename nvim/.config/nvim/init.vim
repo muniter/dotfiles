@@ -54,7 +54,7 @@ Plug 'AndrewRadev/sideways.vim'
 " }}}
 " LSP {{{
 " Configurations for neovim built in lsp.
-Plug 'neovim/nvim-lsp'                        "Nvim lsp configuration examples
+Plug 'neovim/nvim-lspconfig'                        "Nvim lsp configuration examples
 Plug 'nvim-lua/lsp-status.nvim'               "Status lsp integration
 Plug 'nvim-lua/completion-nvim'
 Plug 'steelsojka/completion-buffers'
@@ -186,6 +186,7 @@ set linebreak
 augroup Bible
     autocmd!
     autocmd BufReadPost reina_valera_1960.md :syntax match Concealed '^\d*\..\{3\}\.\d*\.' conceal
+    autocmd BufReadPost reina_valera_1960.md :syntax match DiffDelete '>.*'
     autocmd BufReadPost reina_valera_1960.md :set conceallevel=2
     autocmd BufReadPost reina_valera_1960.md :set concealcursor=nvi
     " autocmd BufReadPost reina_valera_1960.md setlocal spell spelllang=es
@@ -195,6 +196,7 @@ augroup Bible
     autocmd BufReadPost reina_valera_1960.md iabbrev sn Señor
     autocmd BufReadPost reina_valera_1960.md iabbrev ss Espíritu Santo
     autocmd BufReadPost reina_valera_1960.md iabbrev hd hijo de Dios
+    autocmd BufReadPost reina_valera_1960.md iabbrev hsd hijos de Dios
     autocmd BufReadPost reina_valera_1960.md iabbrev dd Dios
     autocmd BufReadPost reina_valera_1960.md iabbrev jh Jehová
     autocmd BufReadPost reina_valera_1960.md iabbrev ig Iglesia
@@ -233,8 +235,11 @@ tnoremap <C-L> <C-\><C-N><C-W><C-L>
 tnoremap <C-H> <C-\><C-N><C-W><C-H>
 
 "Save quick
-nnoremap <C-S> <ESC>:write<CR>
-inoremap <C-S> <ESC>:write<CR>
+" nnoremap <C-S> <ESC>:write<CR>
+" inoremap <C-S> <ESC>:write<CR>
+
+"Exit quick
+nnoremap ZXX :qall!<CR>
 
 " Use arrow keys to scroll
 nnoremap <Up> <C-y>
@@ -273,7 +278,7 @@ nnoremap ' `
 nnoremap Y y$
 
 "Quick opening command line mode
-nnoremap q; q:
+" nnoremap q; q:
 "Quick editing vimrc
 nnoremap <leader>vr  :sp $MYVIMRC<cr>
 nnoremap <leader>so :source $MYVIMRC<cr>

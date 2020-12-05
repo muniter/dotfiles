@@ -406,7 +406,7 @@ for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-calculator|gnome-power
 for_window [title="^(Advanced search|Query.*)$" app_id="^recoll$"] floating enable, resize set 925 600
 
 # Opacity
-for_window [app_id="^Alacritty$"] opacity set 0.9
+for_window [app_id="^Alacritty$"] opacity set 0.98
 for_window [title="dropdown"] opacity set 0.84
 for_window [con_mark="^notes_scratch$"] opacity set 0.80
 

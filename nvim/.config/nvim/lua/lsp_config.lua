@@ -1,5 +1,5 @@
 -- Python
-require'nvim_lsp'.pyls.setup({
+require'lspconfig'.pyls.setup({
     enable = true,
     on_attach = require'completion'.on_attach,
     settings = {
@@ -14,17 +14,27 @@ require'nvim_lsp'.pyls.setup({
     }
 })
 -- Typescript, Javascript
-require'nvim_lsp'.tsserver.setup({enable = true, on_attach = require'completion'.on_attach})
+require'lspconfig'.tsserver.setup({enable = true, on_attach = require'completion'.on_attach})
 -- Lua
-require'nvim_lsp'.sumneko_lua.setup({on_attach = require'completion'.on_attach})
+require'lspconfig'.sumneko_lua.setup({
+    on_attach = require('completion').on_attach,
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = {
+                    "vim"
+                }
+            }
+        }
+    }
+})
 -- JSON
-require'nvim_lsp'.jsonls.setup{({on_attach = require'completion'.on_attach})}
+require'lspconfig'.jsonls.setup{({on_attach = require'completion'.on_attach})}
 -- YAML
-require'nvim_lsp'.yamlls.setup{({on_attach = require'completion'.on_attach})}
+require'lspconfig'.yamlls.setup{({on_attach = require'completion'.on_attach})}
 -- HTML
-require'nvim_lsp'.html.setup{({on_attach = require'completion'.on_attach})}
+require'lspconfig'.html.setup{({on_attach = require'completion'.on_attach})}
 -- CSS
-require'nvim_lsp'.cssls.setup{({on_attach = require'completion'.on_attach})}
+require'lspconfig'.cssls.setup{({on_attach = require'completion'.on_attach})}
 -- Docker
-require'nvim_lsp'.dockerls.setup{({on_attach = require'completion'.on_attach})}
-
+require'lspconfig'.dockerls.setup{({on_attach = require'completion'.on_attach})}

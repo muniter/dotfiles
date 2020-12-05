@@ -5,3 +5,6 @@ require('colorizer').setup()
 
 -- LSP Configuration
 require('lsp_config')
+
+-- My functions
+require('myfunctions')
