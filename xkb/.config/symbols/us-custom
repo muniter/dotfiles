@@ -32,7 +32,7 @@ xkb_symbols "us_custom" {
 
 
     // Control on HOLD, TODO: Not working right now since now is control with all the modified keys
-    key <SPCE> { [        space,        space,           Return,     Control_L ] };
+    key <SPCE> { [        space,        space,           space,     Control_L ] };
 	key <RTRN> { [ Return ] };
 
     // Shortcuts
@@ -43,4 +43,17 @@ xkb_symbols "us_custom" {
     key <AB04> { [ v, V, XF86Paste, bracketleft ] };
     key <AD04> { [ r, R, XF86Refresh, NoSymbol ] };
     key <AC04> { [ f, F, XF86Search, XF86Search ] };
+
+    // TODO: Find a way to toggle this.
+    // Reverse number and symbols.
+    //key <AE01> {	[exclam, 		  1]	};
+    //key <AE02> {	[at,		      2]	};
+    //key <AE03> {	[numbersign,	  3]	};
+    //key <AE04> {	[dollar,		  4]	};
+    //key <AE05> {	[percent,		  5]	};
+    //key <AE06> {	[asciicircum,	  6]	};
+    //key <AE07> {	[ampersand,		  7]	};
+    //key <AE08> {	[asterisk,		  8]	};
+    //key <AE09> {	[parenleft,		  9]	};
+    //key <AE10> {	[parenright,	  0]	};
 };
