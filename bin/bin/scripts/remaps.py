@@ -3,7 +3,6 @@
 import atexit
 import evdev
 import os
-import time
 from time import sleep
 
 # Check if running as roout
@@ -31,9 +30,13 @@ devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
 devices_names = list(map(lambda d: d.name, devices))
 
 # Names
-WIRED = 'MosArt USB Keyboard'
-WIRELESS = 'MosArt USB 2.4G Keyboard'
-NAME = WIRED if WIRED in devices_names else WIRELESS
+KEYBOARDS = ['AT Translated Set 2 keyboard',
+             'MosArt USB Keyboard',
+             'MosArt USB 2.4G Keyboard']
+for k in KEYBOARDS:
+    if k in devices_names:
+        NAME = k
+        break
 kbd = [d for d in devices if d.name == NAME and len(d._rawcapabilities) > 4][0]
 
 # Make the virtual Kb name similar.
@@ -56,11 +59,11 @@ last_event = ''
 with evdev.UInput.from_device(kbd, name=virtual_kdb_name) as ui:
     # Read events from original keyboard.
     for ev in kbd.read_loop():
-        print("Active keycodes", kbd.active_keys(True))
+        # print("Active keycodes", kbd.active_keys(True))
         # Process only key events.
         if ev.type == evdev.ecodes.EV_KEY:
-            # When pause is pressed break the loop
-            if ev.code == evdev.ecodes.KEY_PAUSE and ev.value == 1:
+            # When end is pressed break the loop
+            if ev.code == evdev.ecodes.KEY_END and ev.value == 1:
                 break
             # If I want to remap that key
             elif ev.code in REMAP_TABLE:

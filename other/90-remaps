@@ -1,0 +1,3 @@
+# Allow the remaps to be run as root by normal user without the password
+muniter ALL = (root) NOPASSWD: /home/muniter/bin/scripts/remaps.py
+

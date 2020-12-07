@@ -31,8 +31,6 @@ set $record-stop killall -s SIGINT wf-recorder
 exec mako
 exec $scripts/track_prev_focus
 exec insync start --qt-qpa-platform=xcb && insync show
-# Remap keys to work as modifiers
-exec sudo $scripts/remaps.py
 
 ### Key bindings
 
