@@ -202,6 +202,7 @@ augroup Bible
     autocmd BufReadPost reina_valera_1960.md iabbrev ig Iglesia
     autocmd BufReadPost reina_valera_1960.md iabbrev hml Hermana María Luisa
     autocmd BufReadPost reina_valera_1960.md setlocal scrolloff=0
+    autocmd BufReadPost reina_valera_1960.md setlocal spell spelllang=es
     autocmd BufReadPost reina_valera_1960.md nnoremap <buffer><silent>fd :!xdg-open "https://dle.rae.es/<cword>?m=form"<CR>
     "ls
 augroup END
@@ -450,6 +451,9 @@ let g:fzf_preview_command = 'tail {-1}'
 
 " UndoTree
 let g:undotree_SetFocusWhenToggle = 1
+nnoremap <leader>ut <cmd>UndotreeToggle<CR>
+nnoremap <leader>utf <cmd>UndotreeFocus<CR>
+
 
 "Firenvim
 let g:firenvim_config = { 

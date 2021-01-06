@@ -42,6 +42,7 @@ exec insync start --qt-qpa-platform=xcb && insync show
 
     # Kill focused window
     bindsym $mod+Shift+q kill
+    bindsym $mod+q kill
 
     # Start your launcher
     bindsym $mod+d exec $menu
@@ -114,7 +115,7 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     bindsym $mod+Control+$alt+h move container to workspace prev_on_output, workspace prev_on_output
     bindsym $mod+Control+$alt+l move container to workspace next_on_output, workspace next_on_output
 
-#Opens next free workspace
+    #Opens next free workspace
     bindsym $mod+o exec $scripts/next-empty-workspace open
     bindsym $mod+Shift+o exec $scripts/next-empty-workspace move
 
@@ -326,6 +327,9 @@ mode "layout" {
         bindsym $down split vertical, focus left, move right, focus down, mode "default"
         bindsym $up split vertical, focus right, move left, focus up, mode "default"
 
+        # Quick sticky window following
+        bindsym $mod+f floating enable, resize set 1000 562, sticky toggle, mode "default"
+
         # Properties
         bindsym Shift+s sticky toggle, mode "default"
         bindsym f floating toggle, mode "default"
@@ -355,6 +359,12 @@ mode "layout" {
         #todo: moving floating windows.
         bindsym escape mode "default"
         bindsym return mode "default"
+
+        # Takes screenshot and video
+        bindsym --release $mod+Shift+period exec $screenshot, mode "default"
+        bindsym --release $mod+Shift+comma exec notify-send "Now recording", exec $record, mode "default"
+        bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped", mode "default"
+
 }
 
 # Debug mode
@@ -400,7 +410,7 @@ bindsym $mod+Shift+Insert border toggle
 bindsym $mod+Insert title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
 
 # Layout
-for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-calculator|gnome-power-.*)"] floating enable, resize set 925 600
+for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-calculator|gnome-power-.*|system-config-printer)"] floating enable, resize set 925 600
 for_window [title="^(Advanced search|Query.*)$" app_id="^recoll$"] floating enable, resize set 925 600
 
 # Opacity
