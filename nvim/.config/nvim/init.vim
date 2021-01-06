@@ -185,14 +185,19 @@ set linebreak
 ""Conceal
 augroup Bible
     autocmd!
+    " Conceal the beginning of each verse, only showing the verse
+    " number.
     autocmd BufReadPost reina_valera_1960.md :syntax match Concealed '^\d*\..\{3\}\.\d*\.' conceal
-    autocmd BufReadPost reina_valera_1960.md :syntax match DiffDelete '>.*'
+    " Comments I make that start with >
+    autocmd BufReadPost reina_valera_1960.md :syntax match DiffDelete '>\s.*'
+    autocmd BufReadPost reina_valera_1960.md :syntax match htmlTag '>t\s.*'
     autocmd BufReadPost reina_valera_1960.md :set conceallevel=2
     autocmd BufReadPost reina_valera_1960.md :set concealcursor=nvi
     " autocmd BufReadPost reina_valera_1960.md setlocal spell spelllang=es
     autocmd BufReadPost reina_valera_1960.md iabbrev cj Cristo Jesús
     autocmd BufReadPost reina_valera_1960.md iabbrev rr Rey de Reyes
-    autocmd BufReadPost reina_valera_1960.md iabbrev sj Señor Jesucristo
+    autocmd BufReadPost reina_valera_1960.md iabbrev sj Señor Jesús
+    autocmd BufReadPost reina_valera_1960.md iabbrev sc Señor Jesucristo
     autocmd BufReadPost reina_valera_1960.md iabbrev sn Señor
     autocmd BufReadPost reina_valera_1960.md iabbrev ss Espíritu Santo
     autocmd BufReadPost reina_valera_1960.md iabbrev hd hijo de Dios
@@ -200,9 +205,14 @@ augroup Bible
     autocmd BufReadPost reina_valera_1960.md iabbrev dd Dios
     autocmd BufReadPost reina_valera_1960.md iabbrev jh Jehová
     autocmd BufReadPost reina_valera_1960.md iabbrev ig Iglesia
+    autocmd BufReadPost reina_valera_1960.md iabbrev ev evangelio
+    autocmd BufReadPost reina_valera_1960.md iabbrev lm ley de Moisés
     autocmd BufReadPost reina_valera_1960.md iabbrev hml Hermana María Luisa
     autocmd BufReadPost reina_valera_1960.md setlocal scrolloff=0
     autocmd BufReadPost reina_valera_1960.md nnoremap <buffer><silent>fd :!xdg-open "https://dle.rae.es/<cword>?m=form"<CR>
+    autocmd BufReadPost reina_valera_1960.md nnoremap <buffer>yv mz04yt.`z
+    autocmd BufReadPost reina_valera_1960.md iabbrev <expr> > "> " . strftime("%Y-%m-%d %H:%M:%S")       " Date time time
+
     "ls
 augroup END
 " To recover folds when writing and entering
