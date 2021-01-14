@@ -112,8 +112,8 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     bindsym $mod+comma workspace prev_on_output
 
     #Moving window throught workspaces
-    bindsym $mod+Control+$alt+h move container to workspace prev_on_output, workspace prev_on_output
-    bindsym $mod+Control+$alt+l move container to workspace next_on_output, workspace next_on_output
+    bindsym $mod+Shift+period move container to workspace prev_on_output, workspace prev_on_output
+    bindsym $mod+Shift+comma move container to workspace next_on_output, workspace next_on_output
 
     #Opens next free workspace
     bindsym $mod+o exec $scripts/next-empty-workspace open
@@ -195,9 +195,9 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     exec  $term -t nnn -e nnn
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # Hides any scratchpad marked with last, or shows the last one marked
-    bindsym $mod+Shift+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
     bindsym $mod+u [title="^dropdown$"] scratchpad show, move position center, mark --add _last
-    bindsym $mod+n [con_mark="(_last|.)" floating] scratchpad show
+    bindsym $mod+n [title="^nnn$"] scratchpad show, move position center, mark --add _last
+    # bindsym $mod+n [con_mark="(_last|.)" floating] scratchpad show
     bindsym $mod+c [con_mark="^scratch_whatsapp$"] scratchpad show, move position center
 
     # To send any window I want to the scratchpad
@@ -212,7 +212,11 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
 bindsym $mod+i mode "launch"
 mode "launch" {
         bindsym b exec $browser, mode "default"
+
+        # Nautilus, file manager
         bindsym f exec $file_manager, mode "default"
+        bindsym $mod+f [con_mark="^scratch_nautilus$"] scratchpad show, move position center, mode "default", mark --add _last
+        bindsym Shift+f mark scratch_nautilus, move scratchpad, mode "default"
 
         # Element
         bindsym e exec element-desktop, mode "default"
@@ -223,16 +227,16 @@ mode "launch" {
         bindsym $mod+m [class="^Spotify$"] scratchpad show, move position center, mode "default", mark --add _last
 
         # Rhythmbox
-        bindsym Shift+m exec rhythmbox, mode "default"
-        bindsym $mod+Shift+m [app_id="^rhythmbox$"] scratchpad show, move position center, mode "default", mark --add _last
+        bindsym n exec rhythmbox, mode "default"
+        bindsym $mod+n [app_id="^rhythmbox$"] scratchpad show, move position center, mode "default", mark --add _last
 
         # Discord
         bindsym d exec discord, mode "default"
         bindsym $mod+d [class="^discord$"] scratchpad show, move position center, mode "default", mark --add _last
 
-        # Bitwarden
-        bindsym $mod+f [class="^Insync$"] scratchpad show, move position center, mode "default", mark --add _last
-        bindsym Shift+f exec insync show, mode "default"
+        # Insync Google Drive
+        bindsym g exec insync show, mode "default"
+        bindsym $mod+g [class="^Insync$"] scratchpad show, move position center, mode "default", mark --add _last
 
         # Telegram
         bindsym t exec telegram-desktop, mode "default"
@@ -247,6 +251,10 @@ mode "launch" {
         bindsym h exec chromium --app="http://ha.loc", mode "default"
         bindsym $mod+h [con_mark="^scratch_ha_dashboard$"] scratchpad show, move position center, mode "default", mark --add _last
 
+        # Todoist
+        bindsym u exec chromium --app="https://todoist.com/app/#/upcoming", mode "default"
+        bindsym $mod+u [con_mark="^scratch_todoist$"] scratchpad show, move position center, mode "default", mark --add _last
+
         # Bitwarden
         bindsym p exec bitwarden, mode "default"
         bindsym $mod+p [class="^Bitwarden$"] scratchpad show, move position center, mode "default", mark --add _last
@@ -259,9 +267,6 @@ mode "launch" {
         # Bring back dropdown in case closed.
         bindsym Shift+d exec  $dropdown, mode "default"
         bindsym Shift+n exec  $term -t nnn -e nnn, mode "default"
-
-        # Neovim
-        bindsym n exec gnvim, mode "default"
 
         # Getting out of the mode
         bindsym escape mode "default"
@@ -422,8 +427,10 @@ for_window [con_mark="^notes_scratch$"] opacity set 0.80
 for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
 for_window [class="^whatsdesk$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_whatsapp
 for_window [instance="^ha.loc$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_ha_dashboard
+for_window [instance="^todoist.com\_.*$" class="^Chromium"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_todoist
 for_window [class="^(Gitter|Element|discord)$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
-for_window [app_id="(telegram-desktop_telegram-desktop|rhythmbox)"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
+# for_window [app_id="(telegram-desktop_telegram-desktop|rhythmbox)"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
+for_window [app_id="(telegram-desktop_telegram-desktop)"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
 
 for_window [class="^Spotify$"] floating enable, resize set 2000 1200, move scratchpad, border pixel 1
 for_window [class="^Bitwarden$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
