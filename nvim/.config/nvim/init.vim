@@ -110,6 +110,7 @@ call plug#end()
 
 " Options/Variables {{{
 set number rnu
+set exrc                    "Source .initrc in the opened directory
 set autoindent              "Automatic indenting when using <CR> and O
 set cmdheight=1
 filetype plugin indent on
@@ -179,47 +180,6 @@ set wrap
 set breakindent
 let &showbreak=repeat(' ', 3)
 set linebreak
-
-"TODO: Dont close open folds when writting.
-"TODO: Fix issues when pasting having ^M
-""Conceal
-augroup Bible
-    autocmd!
-    " Conceal the beginning of each verse, only showing the verse
-    " number.
-    autocmd BufReadPost reina_valera_1960.md :syntax match Concealed '^\d*\..\{3\}\.\d*\.' conceal
-    " Comments I make that start with >
-    autocmd BufReadPost reina_valera_1960.md :syntax match DiffDelete '>\s.*'
-    autocmd BufReadPost reina_valera_1960.md :syntax match htmlTag '>t\s.*'
-    autocmd BufReadPost reina_valera_1960.md :set conceallevel=2
-    autocmd BufReadPost reina_valera_1960.md :set concealcursor=nvi
-    " autocmd BufReadPost reina_valera_1960.md setlocal spell spelllang=es
-    autocmd BufReadPost reina_valera_1960.md iabbrev cj Cristo Jesús
-    autocmd BufReadPost reina_valera_1960.md iabbrev rr Rey de Reyes
-    autocmd BufReadPost reina_valera_1960.md iabbrev sj Señor Jesús
-    autocmd BufReadPost reina_valera_1960.md iabbrev sc Señor Jesucristo
-    autocmd BufReadPost reina_valera_1960.md iabbrev sn Señor
-    autocmd BufReadPost reina_valera_1960.md iabbrev ss Espíritu Santo
-    autocmd BufReadPost reina_valera_1960.md iabbrev hd hijo de Dios
-    autocmd BufReadPost reina_valera_1960.md iabbrev hsd hijos de Dios
-    autocmd BufReadPost reina_valera_1960.md iabbrev dd Dios
-    autocmd BufReadPost reina_valera_1960.md iabbrev jh Jehová
-    autocmd BufReadPost reina_valera_1960.md iabbrev ig Iglesia
-    autocmd BufReadPost reina_valera_1960.md iabbrev ev evangelio
-    autocmd BufReadPost reina_valera_1960.md iabbrev lm ley de Moisés
-    autocmd BufReadPost reina_valera_1960.md iabbrev hml Hermana María Luisa
-    autocmd BufReadPost reina_valera_1960.md setlocal scrolloff=0
-    autocmd BufReadPost reina_valera_1960.md setlocal spell spelllang=es
-    autocmd BufReadPost reina_valera_1960.md nnoremap <buffer><silent>fd :!xdg-open "https://dle.rae.es/<cword>?m=form"<CR>
-    autocmd BufReadPost reina_valera_1960.md nnoremap <buffer>yv mz04yt.`z
-    autocmd BufReadPost reina_valera_1960.md iabbrev <expr> > "> " . strftime("%Y-%m-%d %H:%M:%S")       " Date time time
-
-    "ls
-augroup END
-" To recover folds when writing and entering
-" au BufWinLeave * mkview
-" au BufWinEnter * silent loadview
-
 "}}}
 
 " Mappings {{{
@@ -246,8 +206,8 @@ tnoremap <C-L> <C-\><C-N><C-W><C-L>
 tnoremap <C-H> <C-\><C-N><C-W><C-H>
 
 "Save quick
-" nnoremap <C-S> <ESC>:write<CR>
-" inoremap <C-S> <ESC>:write<CR>
+nnoremap <C-S> <ESC>:write<CR>
+inoremap <C-S> <ESC>:write<CR>
 
 "Exit quick
 nnoremap ZXX :qall!<CR>
@@ -293,6 +253,7 @@ nnoremap Y y$
 "Quick editing vimrc
 nnoremap <leader>vr  :sp $MYVIMRC<cr>
 nnoremap <leader>so :source $MYVIMRC<cr>
+nnoremap <leader>sof :source %<cr>
 
 " Quick Spell Configuration
 nnoremap <leader>spe  :setlocal spell spelllang=en<CR>
@@ -480,6 +441,32 @@ let g:firenvim_config = {
     \ }
 \ }
 
+"Function to not lose work from firenvim
+function! Firenvim_Backup(timer) abort
+            silent! write! /tmp/my_backup
+        endfunction
+
+"Detect when firenvim is active
+function! s:IsFirenvimActive(event) abort
+  if !exists('*nvim_get_chan_info')
+    return 0
+  endif
+  let l:ui = nvim_get_chan_info(a:event.chan)
+  return has_key(l:ui, 'client') && has_key(l:ui.client, 'name') &&
+      \ l:ui.client.name =~? 'Firenvim'
+endfunction
+
+function! OnUIEnter(event) abort
+  if s:IsFirenvimActive(a:event)
+    set laststatus=0
+    "Saves every 1s firenvim backup
+    call timer_start(1000, 'Firenvim_Backup', {'repeat': -1})
+  endif
+endfunction
+
+"
+autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
+
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ }
@@ -492,6 +479,7 @@ command! -nargs=0 Agenda :call dotoo#agenda#agenda()<CR>
 let g:zkdir = $HOME.'/notes/zettel'
 
 " Filetype unique configuration {{{
+autocmd FileType markdown nnoremap <leader>asdf :MarkdownPreview<CR>
 " Yaml configuration
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 " Jsonc configuration
@@ -587,10 +575,6 @@ inoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 " on 2020-07-10 3:55
 " TODO
 " Search last search //
-" TODO Concealed With the following I was able to hide
-" The start of My bible. But I don't like it always open
-" syn match Concealed '^\d*\.\I\{3\}\.\d*\.' conceal
-" set conceallevel=2
 " TODO
 " Read completopt that's what manages the LSP Completions
 " TODO: More advance motions with searching
