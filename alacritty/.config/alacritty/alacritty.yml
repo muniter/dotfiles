@@ -159,9 +159,8 @@ key_bindings:
   - { key: Minus,    mods: Control,          action: None                }
   - { key: Equals,   mods: Control,          action: None                }
     # 12 is minus or underscore
-  - { key: Add,      mods: Control|Shift,    action: IncreaseFontSize    }
-  - { key: 12,       mods: Control|Shift,    action: DecreaseFontSize    }
-  - { key: 12,       mods: Control|Shift,    action: DecreaseFontSize    }
+  - { key: Equals,      mods: Control,    action: IncreaseFontSize    }
+  - { key: Minus,       mods: Control,    action: DecreaseFontSize    }
   - { key: Paste,                   action: Paste                        }
   - { key: Copy,                    action: Copy                         }
   - { key: Insert,   mods: Shift,   action: PasteSelection               }
