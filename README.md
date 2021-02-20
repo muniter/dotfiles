@@ -75,7 +75,7 @@ Currently not in the ubuntu repos. Can get `.deb` from `https://github.com/alacr
 ### Using snaps
 
 ```
-sudo snap install telegram-desktop spotify discord gitter gimp inkscape bitwarden obs-studio
+sudo snap install telegram-desktop spotify discord gitter gimp inkscape bitwarden bw obs-studio signal-desktop
 sudo snap install --classic code skype
 ```
 

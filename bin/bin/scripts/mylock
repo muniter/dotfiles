@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+[[ "$SWAYSOCK" ]] && {
+    TIMEOUT=600
+
+    BACKGROUND=$HOME/Pictures/wallpaper.jpg
+    LOCK="swaylock -f -l -k --indicator-idle-visible --image "$BACKGROUND" $BG"
+    case "$1" in
+        lock)
+            BG='&'
+            [[ "$2" == "wait" ]] && BG=''
+            $LOCK
+            ;;
+
+        unlock)
+            pkill swayidle
+            swayidle -w\
+                timeout $TIMEOUT  "swaymsg 'output * dpms off'" \
+                resume            "swaymsg 'output * dpms on'" \
+                before-sleep      "$LOCK"
+            ;;
+
+        lock-on|*)
+            pkill swayidle
+            swayidle -w\
+                timeout $TIMEOUT  "swaymsg 'output * dpms off'" \
+                resume            "swaymsg 'output * dpms on'" \
+                before-sleep      "$LOCK"
+            ;;
+    esac
+}
