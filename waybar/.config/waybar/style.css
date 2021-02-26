@@ -19,24 +19,6 @@ window#waybar.hidden {
     opacity: 0.2;
 }
 
-/*
-window#waybar.empty {
-    background-color: transparent;
-}
-window#waybar.solo {
-    background-color: #FFFFFF;
-}
-*/
-
-window#waybar.termite {
-    background-color: #3F3F3F;
-}
-
-window#waybar.chromium {
-    background-color: #000000;
-    border: none;
-}
-
 #workspaces button {
     padding: 0 5px;
     background-color: transparent;
@@ -74,6 +56,8 @@ window#waybar.chromium {
 #network,
 #pulseaudio,
 #custom-media,
+#custom-progams,
+#custom-options,
 #tray,
 #mode,
 #idle_inhibitor,
@@ -180,10 +164,6 @@ label:focus {
 
 #temperature.critical {
     background-color: #eb4d4b;
-}
-
-#tray {
-    background-color: #2980b9;
 }
 
 #idle_inhibitor {
