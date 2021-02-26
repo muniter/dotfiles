@@ -1,6 +1,8 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.local/bin/:/snap/bin:$HOME/.config/vim_plug/fzf/bin
 
+export PATH=$PATH:$HOME/.config/nvim/plugged/vim-terminal-help/tools/utils/
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -94,6 +96,9 @@ else
   export EDITOR='nvim'
 fi
 
+# Sudo editor
+export SUDO_EDITOR='vim'
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -120,3 +125,6 @@ source $ZSH/oh-my-zsh.sh
 # Vim mode editing
 #bindkey -v
 if [ -e /home/muniter/.nix-profile/etc/profile.d/nix.sh ]; then . /home/muniter/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# Bitwarden Completion
+eval "$(bw completion --shell zsh); compdef _bw bw;"
