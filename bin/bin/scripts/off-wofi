@@ -18,6 +18,7 @@ if __name__ == "__main__":
             'Suspend & Office': 'curl -d "" homeassistant.loc:8123/api/webhook/office_09945612',
             'Toggle Office Light': 'curl -d "" homeassistant.loc:8123/api/webhook/office_light_09945612',
             'Toggle Office Fan': 'curl -d "" homeassistant.loc:8123/api/webhook/office_fan_09945612',
+            'Toggle Office Lamp': 'hass-cli service call light.toggle --arguments entity_id=light.office_lamp',
             'Exit sway': 'swaymsg exit',
             'Reboot': 'reboot',
             'Shutdown': 'shutdown -h now',

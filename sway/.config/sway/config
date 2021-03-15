@@ -9,6 +9,7 @@ set $right l
 set $term alacritty
 set $scripts $HOME/bin/scripts
 set $browser firefox
+set $chrome google-chrome
 set $file_manager nautilus
 
 ## Command Variables
@@ -18,7 +19,8 @@ set $netrefresh  sudo systemctl restart NetworkManager
 set $hibernate sudo systemctl suspend
 set $dmenu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu wofi -i --show drun
-set $dropdown $term -t dropdown -e zsh -c tmux
+# set $dropdown $term -t dropdown -e zsh -c tmux
+set $dropdown $term -t dropdown -e nvim +term
 
 
 # Screenshot of selection to stdout, saving to a file and into clipboard
@@ -28,9 +30,15 @@ set $record wf-recorder -a -g "$(slurp)" -f /tmp/"recording_$(date +%Y%m%d_%H%M%
 set $record-stop killall -s SIGINT wf-recorder
 
 ### Startup
-exec mako
+exec_always pkill -x mako; sleep 1; mako
+# Authentication agent
 exec $scripts/track_prev_focus
 exec insync start --qt-qpa-platform=xcb && insync show
+exec nm-applet
+# Gnome authentication Agent
+#exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+# Polkit authentication agent
+exec lxpolkit # Sudo Application authentication
 
 ### Key bindings
 
@@ -42,7 +50,7 @@ exec insync start --qt-qpa-platform=xcb && insync show
 
     # Kill focused window
     bindsym $mod+Shift+q kill
-    bindsym $mod+q kill
+    # bindsym $mod+q kill
 
     # Start your launcher
     bindsym $mod+d exec $menu
@@ -112,8 +120,8 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     bindsym $mod+comma workspace prev_on_output
 
     #Moving window throught workspaces
-    bindsym $mod+Shift+period move container to workspace prev_on_output, workspace prev_on_output
-    bindsym $mod+Shift+comma move container to workspace next_on_output, workspace next_on_output
+    bindsym $mod+Shift+comma move container to workspace prev_on_output, workspace prev_on_output
+    bindsym $mod+Shift+period move container to workspace next_on_output, workspace next_on_output
 
     #Opens next free workspace
     bindsym $mod+o exec $scripts/next-empty-workspace open
@@ -180,6 +188,8 @@ bindsym $mod+Shift+Backspace exec $record-stop, notify-send "Recording Stopped"
     gaps outer 2
     bindsym $mod+m gaps inner current plus 5
     bindsym $mod+Shift+m gaps inner current minus 5
+    bindsym $mod+$alt+m gaps outer current plus 5
+    bindsym $mod+Shift+$alt+m gaps outer current minus 5
 
 #
 # Theme stuff
@@ -242,22 +252,30 @@ mode "launch" {
         bindsym t exec telegram-desktop, mode "default"
         bindsym $mod+t [app_id="telegram-desktop_telegram-desktop"] scratchpad show, move position center, mode "default", mark --add _last
 
+        # Signal
+        bindsym s exec signal-desktop, mode "default"
+        bindsym $mod+s [class="^Signal$" instance="^signal"] scratchpad show, move position center, mode "default", mark --add _last
+
         # Whatsapp
         bindsym c exec whatsdesk, mode "default"
-        # bindsym c exec chromium --app="https://web.whatsapp.com/", mode "default"
+        # bindsym c exec $chrome --app="https://web.whatsapp.com/", mode "default"
         bindsym $mod+Shift+c mark scratch_whatsapp, mode "default"
 
         # Home Assistant
-        bindsym h exec chromium --app="http://ha.loc", mode "default"
+        bindsym h exec $chrome --app="http://ha.loc", mode "default"
         bindsym $mod+h [con_mark="^scratch_ha_dashboard$"] scratchpad show, move position center, mode "default", mark --add _last
 
         # Todoist
-        bindsym u exec chromium --app="https://todoist.com/app/#/upcoming", mode "default"
+        bindsym u exec $chrome --app="https://todoist.com/app/#/upcoming", mode "default"
         bindsym $mod+u [con_mark="^scratch_todoist$"] scratchpad show, move position center, mode "default", mark --add _last
 
         # Bitwarden
         bindsym p exec bitwarden, mode "default"
         bindsym $mod+p [class="^Bitwarden$"] scratchpad show, move position center, mode "default", mark --add _last
+
+        # Pomodoro Timer
+        bindsym y exec pomotroid, mode "default"
+        bindsym $mod+y [class="^pomotroid$"] scratchpad show, move position center, mode "default", mark --add _last
 
         # Notes Scratchpad
         bindsym Shift+i mark notes_scratch, move scratchpad, mode "default"
@@ -287,9 +305,10 @@ mode "settings" {
         # Sound
         bindsym s exec $scripts/volume-control change-sink, mode "default"
         bindsym d exec $scripts/wofi-options.py change-sink, mode "default"
-        bindsym m exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-        bindsym l exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+        bindsym m input 1133:49970:Logitech_Gaming_Mouse_G502 events enabled, mode "default"
+        bindsym n input 1133:49970:Logitech_Gaming_Mouse_G502 events disabled, mode "default"
         bindsym Escape mode "default"
+
 }
 
 # resize containers 
@@ -323,6 +342,7 @@ mode "layout" {
 
         # Quitting
         bindsym q kill, mode "default"
+        bindsym $mod+q kill, mode "default"
 
         # Quick Stacking
         bindsym $left split vertical, focus left, move right, layout stacking, focus up, mode "default"
@@ -408,6 +428,7 @@ mode "nagbar" {
 ### Layouts stuff
 #
 # Global Properties
+focus_follow_mouse yes
 titlebar_border_thickness 1
 for_window [title=".*"] border pixel 5
 show_marks yes
@@ -415,7 +436,7 @@ bindsym $mod+Shift+Insert border toggle
 bindsym $mod+Insert title_format title:%title app_id:%app_id class:%class instance:%instance shell:%shell
 
 # Layout
-for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-calculator|gnome-power-.*|system-config-printer)"] floating enable, resize set 925 600
+for_window [app_id="^(pavucontrol|wdisplays|psensor|gnome-calculator|gnome-power-.*|system-config-printer|nm-connection.*)"] floating enable, resize set 925 600
 for_window [title="^(Advanced search|Query.*)$" app_id="^recoll$"] floating enable, resize set 925 600
 
 # Opacity
@@ -426,20 +447,42 @@ for_window [con_mark="^notes_scratch$"] opacity set 0.80
 # scrachpads
 for_window [title="^(dropdown|nnn)$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
 for_window [class="^whatsdesk$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_whatsapp
+for_window [class="^Signal$" instance="^signal"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_signal
 for_window [instance="^ha.loc$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_ha_dashboard
-for_window [instance="^todoist.com\_.*$" class="^Chromium"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_todoist
+for_window [instance="^todoist.com\_.*$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5, mark scratch_todoist
 for_window [class="^(Gitter|Element|discord)$"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
 # for_window [app_id="(telegram-desktop_telegram-desktop|rhythmbox)"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
 for_window [app_id="(telegram-desktop_telegram-desktop)"] floating enable, resize set 1400 1000, move scratchpad, border pixel 5
+for_window [class="^pomotroid$"] move scratchpad
 
 for_window [class="^Spotify$"] floating enable, resize set 2000 1200, move scratchpad, border pixel 1
 for_window [class="^Bitwarden$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
-for_window [class="^Insync$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
+# for_window [class="^Insync$"] floating enable, resize set 925 600, move scratchpad, border pixel 1
+for_window [class="^Insync$"] floating enable, resize set 925 600
+
+# Zoom
+for_window [class="zoom" title="^Participants.{0,10}"] floating enable, resize set 600 1000
+
+# Postions tooltips from waybar
+for_window [app_id="waybar" floating] {
+    move position cursor
+    move down 120px # adjust if some menus still don't fit
+    move left 100px
+}
+
+### Colors
+
+# class                 border  bground text    indicator child_border
+client.focused          #4C7899 #285577 #FFFFFF #2E9EF4   #1253C6 
+client.focused_inactive #333333 #5F676A #FFFFFF #484E50   #5F676A
+client.unfocused        #333333 #222222 #888888 #292D2E   #222222
+client.urgent           #2F343A #900000 #FFFFFF #900000   #900000
+client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
 
 
 ### Status Bar:
 #
-exec_always $HOME/.config/waybar/waybar.sh
+exec_always bash $HOME/.config/waybar/waybar.sh
 
 
 ### Function Buttons

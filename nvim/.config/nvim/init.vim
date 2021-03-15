@@ -3,113 +3,156 @@ let mapleader =" "
 let maplocalleader =","
 
 " Plug Configuration {{{
-" General Plugins {{{
 call plug#begin('~/.config/nvim/plugged')
 
-" General Plugins
-Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'} "Python semantyc highlighting
-Plug 'mbbill/undotree'                          "Undo tree
-Plug 'tpope/vim-fugitive'                       "Git integration/wrapper
-Plug 'tpope/vim-surround'                       "Surroun parentheses, brackets, etc
-Plug 'tpope/vim-repeat'                         "Repeat plugins custom mappings like surround.
-Plug 'tpope/vim-scriptease'                     "Utilities for diagnosing viewing messages echoed in nvim
-Plug 'tpope/vim-commentary'                     "Comment every language
-Plug 'ThePrimeagen/vim-be-good', {'do': './install.sh'} "This game will make you go so fast, you'll need some coconut oil.
-Plug 'tpope/vim-eunuch'                     "Unix utilities rename, move, sudowrite, etc
-Plug 'christoomey/vim-tmux-navigator'           "Easy pane switching with tmux
-Plug 'itchyny/lightline.vim'
-" Highlits Colors RED, BLUE #040404
-Plug 'norcalli/nvim-colorizer.lua'
-Plug 'vim-scripts/nginx.vim'                    "Nginx filetype forma t
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } } "firefox vim
-Plug 'junegunn/fzf'                             "fuzzy search
-Plug 'junegunn/fzf.vim', { 'do': { -> fzf#install() } } "fuzze search functions e.g Files, Buffers
+"Utilities {{{
+
+"Unix utilities rename, move, sudowrite, etc
+Plug 'tpope/vim-eunuch'
+
+" Comment every language
+Plug 'tpope/vim-commentary'
+
+" Utilities for diagnosing viewing messages echoed in nvim
+Plug 'tpope/vim-scriptease'
+
+" Repeat plugins custom mappings like surround.
+Plug 'tpope/vim-repeat'
+
+" Surroun parentheses, brackets, etc
+" Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
+
+" Undotree visualization
+Plug 'mbbill/undotree'
+
+" Title case motion
+Plug 'christoomey/vim-titlecase' 
+
+" Rename file utility
+Plug 'qpkorr/vim-renamer'
+
+" Using vim inside firefox
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+
+" Popup window api (required by some plugins)
 Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-lua/telescope.nvim'
+
+" Focusing (centers the text and hides all the things)
 Plug 'junegunn/goyo.vim'
-Plug 'jamestthompson3/nvim-remote-containers'
-Plug 'airblade/vim-gitgutter'                   " Signs in the side for changes/additions/deletions
-" Information on variables, LSP, and others.
-Plug 'liuchengxu/vista.vim'
-" }}}
-" Colors/Themes {{{
-Plug 'tjdevries/colorbuddy.vim'
-Plug 'tjdevries/gruvbuddy.nvim'
-" }}}
-" Startup {{{
-Plug 'mhinz/vim-startify'
-" }}}
-" Tags {{{
-"Plug 'jsfaint/gen_tags.vim'
-Plug 'majutsushi/tagbar'
-" }}}
-" Language Specific {{{
-" Markdown
-" Plug 'plasticboy/vim-markdown'
-"Plug 'gabrielelana/vim-markdown'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } "markdown preview
+
+" Markdown Previewing
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
 " Scramble arguments around <leader>ar and <leader>al
 Plug 'AndrewRadev/sideways.vim'
-" }}}
-" LSP {{{
-" Configurations for neovim built in lsp.
-Plug 'neovim/nvim-lspconfig'                        "Nvim lsp configuration examples
-Plug 'nvim-lua/lsp-status.nvim'               "Status lsp integration
-Plug 'nvim-lua/completion-nvim'
-Plug 'steelsojka/completion-buffers'
-"TODO: Test this
-"Plug 'aca/completion-tabnine', { 'do': './install.sh' }
-Plug 'nvim-lua/diagnostic-nvim'
+
 "}}}
-"Snippets {{{
-Plug 'honza/vim-snippets'                       "Some useful snippets
-"Plug 'norcalli/snippets.nvim'                        "Norcalli snippets
-Plug 'SirVer/ultisnips'
+
+" Language specific {{{
+
+" Python semantic highlighthing
+" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+
+" Nginx filetype format
+Plug 'vim-scripts/nginx.vim' 
+
 "}}}
-" Future User Reference {{{
-" Allows for focusing in a small part of a buffer, to show or explain
-" something
-Plug 'chrisbra/NrrwRgn'
-" Git
-Plug 'rhysd/committia.vim'      " Sweet message committer
-Plug 'rhysd/git-messenger.vim'  " Floating windows are awesome :)
-" HTML expanding abreviation
-"Plug 'mattn/emmet-vim'
-" }}}
-" Navigation {{{
+
+" Navigations and Searching File, Buffers, etc. {{{
+
+" fzf based
+Plug 'junegunn/fzf'                             "fuzzy search
+Plug 'junegunn/fzf.vim', { 'do': { -> fzf#install() } } "fuzze search functions e.g Files, Buffers
+
+" Search all the things
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
+Plug 'nvim-lua/plenary.nvim'
+
+" Navigation "s" to find things
 Plug 'justinmk/vim-sneak'
+"}}}
+
+" Terminal {{{
+
+" Helper functions for terminal (specially the drop command)
+Plug 'skywind3000/vim-terminal-help'
+
 " }}}
-" Games {{{
-Plug 'norcalli/typeracer.nvim'
+
+" {{{ Beautify, colors, statusline, tabline, rice
+" Themes, colorschemes, icons
+Plug 'mhartington/oceanic-next'
+
+" Statusline
+Plug 'itchyny/lightline.vim'
+
+" Highlits Colors RED, BLUE #040404
+Plug 'norcalli/nvim-colorizer.lua' 
+
+" Startup page with recent files, sesions, and others.
+Plug 'mhinz/vim-startify'
+
+" Icons, use them for file tree and telescope
+Plug 'kyazdani42/nvim-web-devicons'
+"}}}
+
+" LSP Stuff and Treesitter {{{
+
+" Configurations
+Plug 'neovim/nvim-lspconfig'
+
+" Completion plugin
+Plug 'nvim-lua/completion-nvim'
+
+" Completion plugin addon, to find in buffers
+Plug 'steelsojka/completion-buffers'
+
+" Treesitter configuration and abstraction layer
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+
+"}}}
+
+"Snippets {{{
+
+" Useful snippets
+Plug 'honza/vim-snippets'
+" Snippets engine
+Plug 'SirVer/ultisnips'
+
+"}}}
+
+" Git {{{
+
+" Git integration/wrapper
+Plug 'tpope/vim-fugitive'
+
+" Git signs in the gutter (left side)
+Plug 'airblade/vim-gitgutter'
+
+" Nice message commiter
+Plug 'rhysd/committia.vim'
 " }}}
-" Investigate {{{
-" Easy changing spelling.
-" TODO add comment what this is
-"Plug 'tweekmonster/spellrotate.vim'
-"Plug 'guns/vim-sexp' "Used and recommended by tpope
-" }}}
-" Testing {{{
-" TODO: I need the nix package manager.
-" Zettelkasten
-Plug 'ihsanturk/neuron.vim'
-" Calendar
-Plug 'itchyny/calendar.vim'
-" Org mode
-Plug 'dhruvasagar/vim-dotoo'
-" One line expressions to multi line
-Plug 'AndrewRadev/splitjoin.vim'
-" Tabulate things
-Plug 'godlygeek/tabular'
-"TODO Use this
-" Switches expressions
+
+" Checkout {{{
+
+" Used and recommended by tpope
+"Plug 'guns/vim-sexp'
+
+" Switch things like [ ] [x] or ture false ...
 Plug 'AndrewRadev/switch.vim'
+
 " }}}
+
 call plug#end()
+
 " }}}
 
 " Options/Variables {{{
-set number rnu
+set history=5000            "Number of items in history for command line
+set number rnu              "Number and relative number
 set exrc                    "Source .initrc in the opened directory
 set autoindent              "Automatic indenting when using <CR> and O
 set cmdheight=1
@@ -151,17 +194,20 @@ set splitright              " Prefer windows splitting to the right
 set splitbelow              " Prefer windows splitting to the bottom
 set scrolloff=10            " Make it so there are always ten lines below my cursor
 set termguicolors           " Enables 24-bit RGB color in the |TUI|.
+set foldmethod=marker       " Folding
+set foldlevel=256           " Foldlevel (Most files will have all folds open
+set nrformats-=octal        " Number format used with <C-a> remove octal format
+set modeline
 
 " Highlight yank text
 lua vim.cmd[[ au TextYankPost * silen! lua require'vim.highlight'.on_yank()]]
+" au TextYankPost * silent! lua vim.highlight.on_yank()
 
 " Sintax highlithing for Lua inside vimscript files.
 let g:vimsyn_embed = 1
 
-" Folding
-set foldmethod=marker
-set foldlevel=0
-set modelines=1
+"Colorshcme
+colorscheme OceanicNext
 
 " Show command changes preview like substitue
 set inccommand=split
@@ -183,27 +229,19 @@ set linebreak
 "}}}
 
 " Mappings {{{
-" For long, wrapped lines
-nnoremap <silent><expr>j (v:count > 0 ? 'j' : 'gj')
-nnoremap <silent><expr>k (v:count > 0 ? 'k' : 'gk')
-nnoremap <silent><leader>j j
-nnoremap <silent><leader>k k
+" If j or k used wihtout a count do gj for long lines, if a count
+" is given mark the position and do v:count . j
+nnoremap <expr>j (v:count > 0 ? "m'" . v:count . "j" : 'gj')
+nnoremap <expr>k (v:count > 0 ? "m'" . v:count . "k" : 'gk')
+"nnoremap <silent><leader>j j
+"nnoremap <silent><leader>k k
 
 " For moving quickly up and down,
 " Goes to the first line above/below that isn't whitespace
 " Thanks to: http://vi.stackexchange.com/a/213
 " Thanks tjdevries on github
-nnoremap gj :let _=&lazyredraw<CR>:set lazyredraw<CR>/\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-nnoremap gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
-
-"REMAPS
-tnoremap JK <C-\><C-N>
-tnoremap <s-esc> <C-\><C-N>
-tnoremap <m-esc> <C-\><C-N>
-tnoremap <C-J> <C-\><C-N><C-W><C-J>
-tnoremap <C-K> <C-\><C-N><C-W><C-K>
-tnoremap <C-L> <C-\><C-N><C-W><C-L>
-tnoremap <C-H> <C-\><C-N><C-W><C-H>
+" nnoremap gj :let _=&lazyredraw<CR>:set lazyredraw<CR>/\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
+" nnoremap gk :let _=&lazyredraw<CR>:set lazyredraw<CR>?\%<C-R>=virtcol(".")<CR>v\S<CR>:nohl<CR>:let &lazyredraw=_<CR>
 
 "Save quick
 nnoremap <C-S> <ESC>:write<CR>
@@ -220,10 +258,11 @@ nnoremap <Right> gt
 nnoremap <Left>  gT
 
 "Split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+nnoremap <m-j> <C-W><C-J>
+nnoremap <m-k> <C-W><C-K>
+nnoremap <m-l> <C-W><C-L>
+nnoremap <m-h> <C-W><C-H>
+" Quick window commands
 nnoremap <leader>w <C-W>
 
 " Sizing window horizontally
@@ -234,10 +273,10 @@ nnoremap <A-.> <C-W>5>
 nnoremap <A-t> <C-W>5+
 nnoremap <A-s> <C-W>5-
 
-" Modify behavior
+" Modify behavior <c-o> is done in another tab, making
+" it easy to go back to pervious state
 nnoremap <c-w>o :tab split<CR>
-nnoremap <silent><expr>j (v:count > 0 ? 'j' : 'gj')
-nnoremap <A-s> <C-W>5-
+nnoremap <leader>wo :tab split<CR>
 
 " Easier Mark Usage
 nnoremap ' `
@@ -247,6 +286,9 @@ nnoremap ' `
 
 " Make Y consistent with C and D.
 nnoremap Y y$
+
+" Yank the whole buffer
+nnoremap <leader>yb :%yank<CR>
 
 "Quick opening command line mode
 " nnoremap q; q:
@@ -260,7 +302,7 @@ nnoremap <leader>spe  :setlocal spell spelllang=en<CR>
 nnoremap <leader>sps  :setlocal spell spelllang=es<CR>
 
 "Quick find
-inoremap jk <esc> 
+" inoremap jk <esc> 
 nnoremap ,f :find 
 nnoremap ,t :tabfind 
 nnoremap ,vf :vert sfind 
@@ -280,10 +322,10 @@ inoremap [, [<CR>],<C-c>O
 " Move last copy item to the + register
 nnoremap ,sr :let @+ = @0<CR>
 
-"Quick small terminal
-command! -nargs=0 Term :10sp +term
-" New Tab Terminal
-command! -nargs=0 TTerm :tabnew +term
+" Quick delete previous buffer
+nnoremap <leader>bdd :bd #<CR>
+nnoremap <leader>BDD :bd! #<CR>
+
 " Create file in non existant and go to it.
 noremap <leader>gf :e <cfile><cr>
 
@@ -292,18 +334,6 @@ command! -nargs=0 Sroot :w !sudo tee %
 
 " Fast switching to alternate file
 nnoremap <silent><BS> :buffer#<CR>
-" Switch to alternate file
-"nnoremap <silent><expr> <s-tab> <C-^>
-"nnoremap <silent><expr> <tab> (v:count > 0 ? '<C-w>w' : ':call <SID>switch_to_alt_win()<CR>')
-
-" go to the previous window (or any other window if there is no 'previous' window).
-func! s:switch_to_alt_win() abort
-  let currwin = winnr()
-  wincmd p
-  if winnr() == currwin "window didn't change; no previous window.
-    wincmd w
-  endif
-endf
 
 "Quickfix Window
 " quickfix window (in quickfix: toggles between qf & loc list)
@@ -319,16 +349,13 @@ nnoremap <Leader>o o<Esc>k
 nnoremap <Leader>O O<Esc>j
 "Split the current line at the cursor position
 nnoremap gj i<c-j><esc>k$
-"Paste last yanked text with P
-xnoremap P "0p
 " quick Help
 nnoremap vK <C-\><C-N>:help <C-R><C-W><CR>
 
 "Change local window directory to current file directory
 nnoremap cd :lcd %:p:h<bar>pwd<cr>
-" nnoremap wd :pwd<cr>
-" Echo current file location
-command! -nargs=0 Pfd :echo(expand('%:p'))
+" Modify <c-g> to show complete path
+nnoremap <c-g> 1<c-g>
 
 "Sideways
 nnoremap <leader>al :SidewaysLeft<cr>
@@ -344,10 +371,11 @@ nnoremap <expr> <CR> {-> v:hlsearch ? ":nohl\<CR>" : "\<CR>"}()
 " mark position before search
 nnoremap / ms/
 
-" Telescope 
-nnoremap <M-p> <cmd>lua require'telescope.builtin'.live_grep()<CR>
-nnoremap <M-/> <cmd>lua require'telescope.builtin'.find_files{}<CR>
-nnoremap <M-;> <cmd>lua require'telescope.builtin'.buffers{}<CR>
+"{{{ Goyo nvim
+nnoremap <M-f> :Goyo<CR>
+"}}}
+
+"{{{ Telescope 
 " Search current-working-directory _or_ current-file-directory
 "nnoremap <silent><expr> <M-/> v:count ? ':<C-U>call <SID>fzf_search_fulltext()<CR>' : ':<C-U>Files<CR>'
 " nnoremap <silent><expr> <M-/> v:count ? ':<C-U>Rg<CR> ' : ':<C-U>Files<CR>'
@@ -359,11 +387,38 @@ nnoremap <silent><leader>gc :Files ~/.config<CR>
 " Search MRU files
 nnoremap <silent>       <M-\> :History<cr>
 nmap                    g/    <M-/>
+"}}}
 
-" nnoremap <silent> gO    :call fzf#vim#buffer_tags('')<cr>
-" nnoremap <silent> z/    :call fzf#vim#tags('')<cr>
+"{{{ Markdown Previewer
+"Do not close the previewer when changing buffer
+let g:mkdp_auto_close = 0
+"}}}
 
-nnoremap <M-f> :Goyo<CR>
+" {{{ Terminal Related
+" Escaping terminal Mode
+tnoremap <M-c> <C-\><C-N>
+nnoremap <M-c> <Esc>
+" Movement
+tnoremap <M-j> <C-\><C-N><C-W><C-J>
+tnoremap <M-k> <C-\><C-N><C-W><C-K>
+tnoremap <M-l> <C-\><C-N><C-W><C-L>
+tnoremap <M-h> <C-\><C-N><C-W><C-H>
+" Quick horizontal smal terminal
+"nnoremap <silent><M-t><M-t> :Term<CR>
+
+"Quick small terminal
+command! -nargs=0 Term :15sp +term
+" New Tab Terminal
+command! -nargs=0 TTerm :tabnew +term
+
+" Paste
+tnoremap <A-p> <C-\><C-n>pi
+" Paste 0 register
+tnoremap <A-0> <C-\><C-n>"0pi
+" Paste + clipboard register register
+tnoremap <A-v> <C-\><C-n>"+pi
+
+" }}}
 
 "}}}
 
@@ -415,8 +470,6 @@ command! BD call fzf#run(fzf#wrap({
 
 " Plugins Configuration {{{
 lua require('init')
-" Corlscheme
-lua require('colorbuddy').colorscheme('gruvbuddy')
 
 let g:fzf_preview_command = 'tail {-1}'
 
@@ -425,8 +478,14 @@ let g:undotree_SetFocusWhenToggle = 1
 nnoremap <leader>ut <cmd>UndotreeToggle<CR>
 nnoremap <leader>utf <cmd>UndotreeFocus<CR>
 
+" Startify {{{
+" Add a command to open a terminal
+let g:startify_commands = [
+    \ {'t': 'term'},
+    \ ]
+" }}}
 
-"Firenvim
+"Firenvim {{{
 let g:firenvim_config = { 
     \ 'globalSettings': {
         \ 'alt': 'all',
@@ -440,6 +499,15 @@ let g:firenvim_config = {
         \ },
     \ }
 \ }
+
+"}}}
+
+"{{{ vim-sandwich 
+
+" vim-surround mappings.
+runtime macros/sandwich/keymap/surround.vim
+
+"}}}
 
 "Function to not lose work from firenvim
 function! Firenvim_Backup(timer) abort
@@ -468,18 +536,18 @@ endfunction
 autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
 
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'default',
       \ }
-
-" dotoo
-let g:dotoo#agenda#files = ['~/notes/dotoo/*.dotoo']
-command! -nargs=0 Agenda :call dotoo#agenda#agenda()<CR>
-
-"Neuron Zettelkasten
-let g:zkdir = $HOME.'/notes/zettel'
+" TreeSitter {{{
+nnoremap <leader>tsf :set foldmethod=expr foldexpr=nvim_treesitter#foldexpr()
+" }}}
+"Titlecase
+nmap <leader>gt <Plug>Titlecase
+vmap <leader>gt <Plug>Titlecase
+nmap <leader>gT <Plug>TitlecaseLine
 
 " Filetype unique configuration {{{
-autocmd FileType markdown nnoremap <leader>asdf :MarkdownPreview<CR>
+autocmd FileType markdown nnoremap <leader>pre :MarkdownPreview<CR>
 " Yaml configuration
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 " Jsonc configuration
@@ -586,3 +654,20 @@ inoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 " beep<Esc>	type another replacement
 " }}}
 let g:racer_cmd = "/home/user/.cargo/bin/racer"
+
+" {{{ Functions
+com! -bar NextTerminalBuffer     call GoNextTerminalBuffer()
+com! -bar PreviousTerminalBuffer call GoNextTerminalBuffer(1)
+fu! GoNextTerminalBuffer (...)                                              "{{{
+    let backward = get(a:, 1, 0)
+    if backward
+        let bufnr = buf#previous('&bt=="terminal"')
+    else
+        let bufnr = buf#next('&bt=="terminal"')
+    end
+    if bufnr != bufnr('%')
+        exe 'b' . bufnr
+    end
+    startinsert
+endfu                                                                       "}}}
+" }}}

@@ -4,7 +4,10 @@
 require('colorizer').setup()
 
 -- LSP Configuration
-require('lsp_config')
+require('muniter.lsp_config')
+
+-- Telescope Configuration
+require('muniter.telescope')
 
 -- My functions
-require('myfunctions')
+require('muniter.myfunctions')

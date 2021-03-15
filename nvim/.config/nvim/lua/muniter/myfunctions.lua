@@ -22,6 +22,13 @@ local function toggleBox()
     line = vim.api.nvim_get_current_line()
 end
 
+
+-- Global function to inspect expressions
+function _G.dump(...)
+    local objects = vim.tbl_map(vim.inspect, {...})
+    print(unpack(objects))
+end
+
 return {
     redirReg = redirReg,
     toggleBox = toggleBox

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 [[ "$SWAYSOCK" ]] && {
-    TIMEOUT=600
+    TIMEOUT=900
 
     BACKGROUND=$HOME/Pictures/wallpaper.jpg
     LOCK="swaylock -f -l -k --indicator-idle-visible --image "$BACKGROUND" $BG"
