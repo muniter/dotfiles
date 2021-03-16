@@ -43,7 +43,7 @@ require('telescope').setup{
       },
     },
     file_sorter =  require'telescope.sorters'.get_fuzzy_file,
-    file_ignore_patterns = {},
+    file_ignore_patterns = {'.git/'},
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     shorten_path = true,
     winblend = 0,
@@ -75,7 +75,7 @@ require('telescope').load_extension('fzy_native')
 
 -- Mappings
 
-vim.api.nvim_set_keymap('n', '<M-/>', [[<Cmd>lua require('telescope.builtin').find_files({ follow = true, hidden = true })<CR>]] , { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<M-/>', [[<Cmd>lua require('telescope.builtin').find_files({ follow = true, hidden = true, file_ignore_patterns = {'.git/'} })<CR>]] , { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<M-p>', [[<Cmd>lua require('telescope.builtin').live_grep()<CR>]] , { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<M-;>', [[<Cmd>lua require('telescope.builtin').buffers()<CR>]] , { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>mdf', [[<Cmd>lua require('muniter.telescope').my_dotfiles()<CR>]], { noremap = true, silent = true })

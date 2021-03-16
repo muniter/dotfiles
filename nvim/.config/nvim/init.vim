@@ -322,6 +322,9 @@ inoremap [, [<CR>],<C-c>O
 " Move last copy item to the + register
 nnoremap ,sr :let @+ = @0<CR>
 
+" Move last command to r register for quick repeat with @r<CR>
+nnoremap <silent>,rr :let @r= ":" . @:<CR>
+
 " Quick delete previous buffer
 nnoremap <leader>bdd :bd #<CR>
 nnoremap <leader>BDD :bd! #<CR>
@@ -427,6 +430,7 @@ tnoremap <A-v> <C-\><C-n>"+pi
 inoremap <M-l> <Right>
 inoremap <M-h> <Left>
 " Abbreviations
+iabbrev TD TODO(javier):
 iabbrev c] - [ ]
 iabbrev <expr> dts] strftime("%Y-%m-%d")                " Date time small
 iabbrev <expr> dtt] strftime("%Y-%m-%d %H:%M:%S")       " Date time time
